@@ -11,7 +11,7 @@ import org.json.JSONTokener;
 public class Explorer implements IExplorerRaid {
 
     private final Logger logger = LogManager.getLogger();
-
+    int action =0; 
     @Override
     public void initialize(String s) {
         logger.info("** Initializing the Exploration Command Center");
@@ -26,7 +26,19 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String takeDecision() {
         JSONObject decision = new JSONObject();
-        decision.put("action", "stop"); // we stop the exploration immediately
+        if (action < 20) {
+            decision.put("action", "fly"); // we stop the exploration immediately
+            action++;
+            if (action == 20) {
+                decision.put("action","scan");
+            }
+            if (action == 21) {
+                decision.put("action","heading");
+            }
+        } else {
+            decision.put("action", "stop");
+        }
+
         logger.info("** Decision: {}",decision.toString());
         return decision.toString();
     }
