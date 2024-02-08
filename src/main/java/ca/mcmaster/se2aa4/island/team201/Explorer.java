@@ -11,48 +11,45 @@ import org.json.JSONTokener;
 public class Explorer implements IExplorerRaid {
 
     private final Logger logger = LogManager.getLogger();
-    int action =0; 
+
+    private DroneController droneController;
+    private final Navigator navigator = new Navigator(droneController);
     @Override
     public void initialize(String s) {
-        logger.info("** Initializing the Exploration Command Center");
         JSONObject info = new JSONObject(new JSONTokener(new StringReader(s)));
-        logger.info("** Initialization info:\n {}",info.toString(2));
-        String direction = info.getString("heading");
-        Integer batteryLevel = info.getInt("budget");
-        logger.info("The drone is facing {}", direction);
-        logger.info("Battery level is {}", batteryLevel);
+        int batteryLevel = info.getInt("budget");
+        int x = info.getInt("x");
+        int y = info.getInt("y");
+        String heading = info.getString("heading");
+
+        // Directly constructing DroneController with initial properties
+        this.droneController = new DroneController(batteryLevel, x, y, heading);
+
+        logger.info("** Initializing with Heading: {}, Battery Level: {}, Coordinates: ({}, {})", heading, batteryLevel, x, y);
     }
+
 
     @Override
     public String takeDecision() {
-        JSONObject decision = new JSONObject();
-        if (action < 20) {
-            decision.put("action", "fly"); // we stop the exploration immediately
-            action++;
-            if (action == 20) {
-                decision.put("action","scan");
-            }
-            if (action == 21) {
-                decision.put("action","heading");
-            }
+        if (droneController.canProceed()) {
+            JSONObject decision = navigator.decideNextAction();
+            // Log the decision taken
+            logger.info("** Decision taken: {}", decision.toString());
+            return decision.toString();
         } else {
-            decision.put("action", "stop");
+            // Log the decision to stop due to battery constraints
+            logger.info("** Decision taken: stop (Battery constraints)");
+            return new JSONObject().put("action", "stop").toString();
         }
-
-        logger.info("** Decision: {}",decision.toString());
-        return decision.toString();
     }
 
     @Override
     public void acknowledgeResults(String s) {
-        JSONObject response = new JSONObject(new JSONTokener(new StringReader(s)));
-        logger.info("** Response received:\n"+response.toString(2));
-        Integer cost = response.getInt("cost");
-        logger.info("The cost of the action was {}", cost);
-        String status = response.getString("status");
-        logger.info("The status of the drone is {}", status);
-        JSONObject extraInfo = response.getJSONObject("extras");
-        logger.info("Additional information received: {}", extraInfo);
+        JSONObject results = new JSONObject(new JSONTokener(new StringReader(s)));
+        // Update state based on results and log the action's outcome
+        droneController.updateState(results);
+        logger.info("** Response received: {}", results.toString(2));
+        logger.info("** Action cost: {}, Remaining battery: {}", results.getInt("cost"), droneController.getBatteryLevel());
     }
 
     @Override
