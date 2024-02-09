@@ -4,10 +4,10 @@ import org.json.JSONObject;
 
 public class DroneController {
     private int batteryLevel;
-    private int x, y; // Coordinates
+    private int x, y;
     private String heading;
 
-    // Constructor to set all initial conditions
+
     public DroneController(int initialBatteryLevel, int x, int y, String heading) {
         this.batteryLevel = initialBatteryLevel;
         this.x = x;
@@ -19,7 +19,7 @@ public class DroneController {
         // Implementation to update state based on action results
     }
 
-    // Getters for battery level, coordinates, and heading
+
     public int getBatteryLevel() {
         return batteryLevel;
     }
