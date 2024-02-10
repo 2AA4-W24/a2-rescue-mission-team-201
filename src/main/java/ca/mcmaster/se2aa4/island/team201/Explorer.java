@@ -35,7 +35,7 @@ public class Explorer implements IExplorerRaid {
     @Override
     public void acknowledgeResults(String s) {
         JSONObject response = new JSONObject(new JSONTokener(new StringReader(s)));
-        stateController.handleResults(response);
+        stateController.handleStateChange(response);
         logger.info("==============END==========");
     }
 

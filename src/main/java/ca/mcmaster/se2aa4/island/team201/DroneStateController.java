@@ -13,7 +13,14 @@ public class DroneStateController {
         this.drone = drone;
         this.batteryManager = new BatteryManager(drone);
     }
-
+    public void handleStateChange(JSONObject response) {
+        handleMapChange();
+        handleResults(response);
+    }
+    private void handleMapChange() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'handleMapChange'");
+    }
     public void handleResults(JSONObject response) {
         Integer cost = response.getInt("cost");
         //logger.info("** Response received:\n"+response.toString(2));
