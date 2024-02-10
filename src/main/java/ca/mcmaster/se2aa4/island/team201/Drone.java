@@ -9,7 +9,8 @@ public class Drone {
         private final static Logger logger = LogManager.getLogger();
 
         private static Drone drone;
-        int actionNum = 0;
+        int actionNum = 1;
+        Direction facing;
         int battery;
         private Drone()
         {
@@ -21,7 +22,9 @@ public class Drone {
                 drone = new Drone();
             return drone;
         }
-      
+        public void changeFacing(Direction facing) {
+            this.facing = facing;
+        }
         public int getBattery() {
             return battery;
         }
@@ -33,5 +36,23 @@ public class Drone {
         }
         public void incrementActions() {
             actionNum++;
+        }
+        public void changeDirection(String direction) {
+            switch(direction) {
+                case "N":
+                this.facing = Direction.north;
+                break;
+                case "E":
+                this.facing = Direction.east;
+                break;
+                case "S":
+                this.facing = Direction.south;
+                break;
+                case "W":
+                this.facing = Direction.west;
+                break;
+
+            }
+            logger.info("changing direction to " + direction);    
         }
 }

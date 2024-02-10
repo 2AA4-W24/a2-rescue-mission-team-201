@@ -11,18 +11,18 @@ public class DroneNavigator {
     Drone drone;
     String lastAction;
     Tactic tactic;
-    public DroneNavigator(Drone drone) {
+    DroneStateController state;
+    public DroneNavigator(Drone drone, DroneStateController state) {
         this.drone = drone;
+        this.state = state;
         this.tactic = new IslandFinder(drone);
     }
     
     public String takeDecision() {
-        JSONObject decision = new JSONObject();
-
-        String action = tactic.decideAction();
-        lastAction = action;
-        logger.info("Taking action #{}: {}",drone.getActionCount(),action);
-        decision.put("action", action); 
-        return decision.toString();
+        JSONObject action = tactic.decideAction();
+        state.handleAction(action);
+        logger.info("Taking action #{}: {}",drone.getActionCount(),action.getString("action"));
+        
+        return action.toString();
     }
 }
