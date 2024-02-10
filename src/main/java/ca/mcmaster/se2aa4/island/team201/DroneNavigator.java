@@ -10,12 +10,10 @@ public class DroneNavigator {
     private final Logger logger = LogManager.getLogger();
     Drone drone;
     String lastAction;
-    BatteryManager battery;
     Tactic tactic;
     public DroneNavigator(Drone drone) {
         this.drone = drone;
-        this.battery = new BatteryManager(drone);
-        this.tactic = new IslandFinder(drone,battery);
+        this.tactic = new IslandFinder(drone);
     }
     
     public String takeDecision() {

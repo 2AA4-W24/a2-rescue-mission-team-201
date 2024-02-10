@@ -11,9 +11,9 @@ public class IslandFinder implements Tactic {
     private final static Logger logger = LogManager.getLogger();
     BatteryManager battery;
     Drone drone; 
-    public IslandFinder(Drone drone, BatteryManager battery) {
+    public IslandFinder(Drone drone) {
         this.drone = drone;
-        this.battery = battery;
+        this.battery = new BatteryManager(drone);
     }
     // Should be able to find the island
     @Override
