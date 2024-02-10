@@ -33,7 +33,7 @@ public class DroneStateController {
             JSONObject parameter  = action.getJSONObject("parameters");
             String direction = parameter.getString("direction");
             drone.changeDirection(direction);
-            logger.info("changing direction to {}", direction);
+            logger.info("changing the direction to {}", direction);
         }
     }
     public void handleResults(JSONObject response) {
