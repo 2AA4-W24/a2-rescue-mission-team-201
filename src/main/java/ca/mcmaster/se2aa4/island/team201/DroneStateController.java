@@ -24,7 +24,7 @@ public class DroneStateController {
     public void useBattery(int cost) {
         int current = drone.getBattery();
         int newBattery = current - cost;
-        logger.info("Using {} battery: {} -> {}", cost, current, newBattery);
+        logger.info("Using {} battery: {} => {}", cost, current, newBattery);
         drone.setBattery(newBattery);
     }
     public void handleAction(JSONObject action) {
