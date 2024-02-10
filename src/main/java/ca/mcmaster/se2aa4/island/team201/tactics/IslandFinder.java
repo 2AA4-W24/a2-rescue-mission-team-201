@@ -15,6 +15,7 @@ public class IslandFinder implements Tactic {
         this.drone = drone;
         this.battery = battery;
     }
+    // Should be able to find the island
     @Override
     public Boolean tacticComplete() {
         // TODO Auto-generated method stub
