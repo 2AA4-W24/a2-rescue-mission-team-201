@@ -15,14 +15,12 @@ class BatteryInterpreterTest {
         mockDrone = mock(Drone.class);
         batteryInterpreter = new BatteryInterpreter(mockDrone);
 
-        // Mock Drone's behavior for the getBattery method
         when(mockDrone.getBattery()).thenReturn(100); // Assuming 100 units of battery for testing
         when(mockDrone.getActionCount()).thenReturn(10); // Assuming drone has made 10 actions
     }
 
     @Test
     void testHasEnoughBatteryForFly() {
-        // Assume flying costs 7 units and returning home costs 70 units (10 actions * 7 units each)
         boolean result = batteryInterpreter.hasEnoughBatteryFor("fly");
         assertTrue(result, "Should have enough battery for flying.");
     }
