@@ -3,20 +3,15 @@ package ca.mcmaster.se2aa4.island.team201;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class BatteryManager {
+public class BatteryInterpreter {
     Drone drone;
     private final static Logger logger = LogManager.getLogger();
 
-    public BatteryManager(Drone drone) {
+    public BatteryInterpreter(Drone drone) {
         this.drone = drone;
     }
 
-    public void useBattery(int cost) {
-        int current = drone.getBattery();
-        int newBattery = current - cost;
-        logger.info("Using battery {} -> {}", current, newBattery);
-        drone.setBattery(newBattery);
-    }
+
     public int batteryToReturnHome() {
         return drone.getActionCount()*7;
     }
@@ -30,7 +25,7 @@ public class BatteryManager {
                 
         }
         boolean hasEnough = (batteryProjectedAfterStop > 0) ? true : false;
-        logger.info("Projected battery if we went home after this operation", current, batteryProjectedAfterStop);
+        logger.info("Projected battery if we went home after this operation {}",batteryProjectedAfterStop);
         return hasEnough;
     }
 }
