@@ -11,33 +11,32 @@ import org.json.JSONTokener;
 public class Explorer implements IExplorerRaid {
 
     private final Logger logger = LogManager.getLogger();
-    Drone drone = Drone.getInstance();
-    DroneStateController stateController = new DroneStateController(drone);
-    DroneNavigator navigator = new DroneNavigator(drone, stateController);
+    private Navigator navigator;
+    private StateController stateController;
+
+    @Override
     public void initialize(String s) {
         logger.info("** Initializing the Exploration Command Center");
         JSONObject info = new JSONObject(new JSONTokener(new StringReader(s)));
         logger.info("** Initialization info:\n {}",info.toString(2));
-        String direction = info.getString("heading");
-        Integer batteryLevel = info.getInt("budget");
-        drone.setBattery(batteryLevel);
-        logger.info("The drone is facing {}", direction);
-        logger.info("Battery level is {}", batteryLevel);
+
+        Direction direction = new Direction(info.getString("heading"));
+        Battery battery = new Battery(info.getInt("budget"));
+        Map map = new Map();
+        stateController = new StateController(direction, map, battery);
+        Interpreter interpreter = new Interpreter(direction, map, battery);
+        ActionExecutor actionExecutor = new ActionExecutor(stateController);
+        Phase phase = new Phase(actionExecutor, interpreter);
+        navigator = new Navigator(phase);
+
+        logger.info("The drone is facing {}", direction.getHeading());
+        logger.info("Battery level is {}", battery.getLevel());
     }
-    int actionCount = 0;
+
     @Override
     public String takeDecision() {
         logger.info("==============START==========");
         return navigator.takeDecision();
-        // JSONObject decision = new JSONObject();
-        // if (actionCount == 0) {
-
-        //     decision.put("action", "scan");
-        // } else {
-        //     decision.put("action","stop");
-        // }
-        // actionCount++; 
-        // return decision.toString();
     }
 
     @Override
