@@ -1,12 +1,11 @@
 package ca.mcmaster.se2aa4.island.team201;
 import org.json.JSONObject;
 public class StateController {
-    private Direction direction;
-    private Map map;
+    
+    private Location map;
     private Battery battery;
 
-    public StateController(Direction direction, Map map, Battery battery){
-        this.direction = direction;
+    public StateController(Location map, Battery battery){
         this.map = map;
         this.battery = battery;
     }
@@ -20,8 +19,11 @@ public class StateController {
             JSONObject extras = response.getJSONObject("extras");
             if (extras.has("direction")) {
                 String newDirection = extras.getString("direction");
-                direction.setHeading(newDirection);
             }
         }
+    }
+
+    public void fly() {
+        map.moveForward();
     }
 }

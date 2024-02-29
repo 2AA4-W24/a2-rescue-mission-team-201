@@ -8,6 +8,8 @@ import eu.ace_design.island.bot.IExplorerRaid;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import ca.mcmaster.se2aa4.island.team201.phases.FindIsland;
+
 public class Explorer implements IExplorerRaid {
 
     private final Logger logger = LogManager.getLogger();
@@ -20,16 +22,15 @@ public class Explorer implements IExplorerRaid {
         JSONObject info = new JSONObject(new JSONTokener(new StringReader(s)));
         logger.info("** Initialization info:\n {}",info.toString(2));
 
-        Direction direction = new Direction(info.getString("heading"));
         Battery battery = new Battery(info.getInt("budget"));
-        Map map = new Map();
-        stateController = new StateController(direction, map, battery);
-        Interpreter interpreter = new Interpreter(direction, map, battery);
+        Location map = new Location();
+        stateController = new StateController(map, battery);
+        Interpreter interpreter = new Interpreter(map, battery);
         ActionExecutor actionExecutor = new ActionExecutor(stateController);
-        Phase phase = new Phase(actionExecutor, interpreter);
-        navigator = new Navigator(phase);
+        Phase initialphase = new FindIsland(actionExecutor, interpreter);
+        navigator = new Navigator(initialphase);
 
-        logger.info("The drone is facing {}", direction.getHeading());
+        logger.info("The drone is facing direction");
         logger.info("Battery level is {}", battery.getLevel());
     }
 
