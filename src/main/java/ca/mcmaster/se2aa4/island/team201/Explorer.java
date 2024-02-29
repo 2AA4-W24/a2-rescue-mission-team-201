@@ -20,7 +20,6 @@ public class Explorer implements IExplorerRaid {
         JSONObject info = new JSONObject(new JSONTokener(new StringReader(s)));
         logger.info("** Initialization info:\n {}",info.toString(2));
 
-        // Instantiate related classes here
         Direction direction = new Direction(info.getString("heading"));
         Battery battery = new Battery(info.getInt("budget"));
         Map map = new Map();
@@ -30,7 +29,6 @@ public class Explorer implements IExplorerRaid {
         Phase phase = new Phase(actionExecutor, interpreter);
         navigator = new Navigator(phase);
 
-        // Logging the direction and battery level, as per your existing code
         logger.info("The drone is facing {}", direction.getHeading());
         logger.info("Battery level is {}", battery.getLevel());
     }
