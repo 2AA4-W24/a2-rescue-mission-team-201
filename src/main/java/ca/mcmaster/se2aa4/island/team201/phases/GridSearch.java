@@ -24,7 +24,7 @@ public class GridSearch implements Phase {
     String actionLog = "";
     int mapWidth = 0;
     Interpreter interpreter;
-    String lastTurned = "";
+    String shouldTurn = "";
     Queue<JSONObject> actionQueue = new LinkedList<JSONObject>();
     Boolean initialScanDone = false;
     public GridSearch(ActionExecutor executor, Interpreter interpreter) {
@@ -41,12 +41,12 @@ public class GridSearch implements Phase {
     }
     public JSONObject turnRight() {
         String right = interpreter.getRightDirection();
-        lastTurned = "right";
+        shouldTurn = "left";
         return executor.turn(right);
     }
     public JSONObject turnLeft() {
         String left = interpreter.getLeftDirection();
-        lastTurned = "left";
+        shouldTurn = "right";
 
         return executor.turn(left);
     }
@@ -76,17 +76,18 @@ public class GridSearch implements Phase {
     
     public JSONObject takeDecision() {
         logger.info(interpreter.numberOfActions());
-        if (interpreter.getBattery() < 50 || interpreter.numberOfActions() > 450) {
+        logger.info("battery {}", interpreter.getBattery());
+        if (interpreter.getBattery() < 50 || interpreter.numberOfActions() > 1200) {
             logger.info(actionLog);
             return executor.stop();
 
         }
-        if (actionQueue.isEmpty()) {
+        while (actionQueue.isEmpty()) {
             switch (step) {
                 case 1:
                     actionLog+="1";
                     logger.info("step 1");
-                    flyForwardBy(25);
+                    flyForwardBy(14);
                     actionQueue.add(echoRight());
                     actionQueue.add(echoLeft());
                     step= 2;
@@ -96,17 +97,22 @@ public class GridSearch implements Phase {
                     Echo[] last2Echos = interpreter.lastNumEchos(2);
                     mapWidth = last2Echos[0].range() + last2Echos[1].range();
                     step = 3;
+                    break;
                 case 3:
                     logger.info("step 3");
                     actionLog+="3";
                     int blocksToFly = mapWidth-2;
                     logger.info("Let's fly forward by {} blocks", blocksToFly);
-                    flyForwardBy(10);
+                    flyForwardBy(22);
                     if (interpreter.getCurrent().y() < -40 && !turnedAround) {
                         step = 7;
                         turnedAround = true;
                     } else {
-                    step = 4;
+                        if (shouldTurn.equals("left")) {
+                            step = 6;
+                        } else {
+                            step = 5;
+                        }
                     }
                     break;
                 case 4:
@@ -115,7 +121,7 @@ public class GridSearch implements Phase {
                     //actionQueue.add(echoRight());
                     //actionQueue.add(echoLeft());
                     actionQueue.add(executor.scan());
-                    if (lastTurned.equals("right")) {
+                    if (shouldTurn.equals("left")) {
                         step = 6;
                     } else {
                         step = 5;
@@ -140,16 +146,16 @@ public class GridSearch implements Phase {
                 case 7:
                     logger.info("7");
                     actionLog += "7";
-                    if (lastTurned.equals("left")) {
+                    if (shouldTurn.equals("right")) {
                         actionQueue.add(turnRight());
                         actionQueue.add(executor.fly());
                         actionQueue.add(turnRight());
-                        lastTurned = "left";
+                        shouldTurn = "right";
                     } else {
                         actionQueue.add(turnLeft());
                         actionQueue.add(executor.fly());
                         actionQueue.add(turnLeft());
-                        lastTurned = "right";
+                        shouldTurn = "left";
                     }
                     step = 3;
                     break;
