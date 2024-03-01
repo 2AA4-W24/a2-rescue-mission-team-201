@@ -11,7 +11,7 @@ public class Battery {
         return level;
     }
 
-    public void decreaseLevel(int cost) {
+    public void decreaseLevelBy(int cost) {
         this.level -= cost;
     }
 }
