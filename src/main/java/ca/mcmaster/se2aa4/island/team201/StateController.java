@@ -26,6 +26,7 @@ public class StateController {
         actionTracker.setLastAction("fly");
     }
     public void echo(String direction) {
+        logger.info("here");
         actionTracker.incrementActionsCompleted();
         actionTracker.setLastAction("echo",direction);
     }

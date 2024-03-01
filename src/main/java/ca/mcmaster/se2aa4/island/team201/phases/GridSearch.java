@@ -82,9 +82,7 @@ public class GridSearch implements Phase {
                 case 1:
                     actionLog+="1";
                     logger.info("step 1");
-                    actionQueue.add(executor.fly());
-                    
-                    actionQueue.add(executor.fly());
+                    flyForwardBy(15);
                     actionQueue.add(echoRight());
                     actionQueue.add(echoLeft());
                     step= 2;
