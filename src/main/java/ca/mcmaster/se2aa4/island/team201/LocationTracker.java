@@ -85,5 +85,26 @@ public class LocationTracker {
                 return current;
         }
     }
+    public void turn(String direction) {
+        setHeading(direction);
+        current = getFront();
+
+        switch (direction) {
+            case "N":
+                current = current.north();
+                break;
+            case "E":
+                current = current.east();
+                break;
+            case "S":
+                current = current.south();
+                break;
+            case "W":
+                current = current.west();
+                break;
+            default:
+                break;
+        }
+    }
     
 }

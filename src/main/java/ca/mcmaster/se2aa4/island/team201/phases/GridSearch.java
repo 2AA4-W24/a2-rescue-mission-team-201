@@ -18,6 +18,7 @@ public class GridSearch implements Phase {
     private final Logger logger = LogManager.getLogger();
     int actionCount =0;
     Boolean initialActions = false;
+    Boolean turnedAround = false;
     ActionExecutor executor; 
     int step = 1;
     String actionLog = "";
@@ -40,10 +41,13 @@ public class GridSearch implements Phase {
     }
     public JSONObject turnRight() {
         String right = interpreter.getRightDirection();
+        lastTurned = "right";
         return executor.turn(right);
     }
     public JSONObject turnLeft() {
         String left = interpreter.getLeftDirection();
+        lastTurned = "left";
+
         return executor.turn(left);
     }
     public JSONObject echoLeft() {
@@ -72,7 +76,7 @@ public class GridSearch implements Phase {
     
     public JSONObject takeDecision() {
         logger.info(interpreter.numberOfActions());
-        if (interpreter.getBattery() < 50 || interpreter.numberOfActions() > 350) {
+        if (interpreter.getBattery() < 50 || interpreter.numberOfActions() > 450) {
             logger.info(actionLog);
             return executor.stop();
 
@@ -82,7 +86,7 @@ public class GridSearch implements Phase {
                 case 1:
                     actionLog+="1";
                     logger.info("step 1");
-                    flyForwardBy(15);
+                    flyForwardBy(25);
                     actionQueue.add(echoRight());
                     actionQueue.add(echoLeft());
                     step= 2;
@@ -98,7 +102,12 @@ public class GridSearch implements Phase {
                     int blocksToFly = mapWidth-2;
                     logger.info("Let's fly forward by {} blocks", blocksToFly);
                     flyForwardBy(10);
+                    if (interpreter.getCurrent().y() < -40 && !turnedAround) {
+                        step = 7;
+                        turnedAround = true;
+                    } else {
                     step = 4;
+                    }
                     break;
                 case 4:
                     logger.info("step 4");
@@ -115,7 +124,6 @@ public class GridSearch implements Phase {
                 case 5:
                     actionLog+="5";
                     logger.info("step 5");
-                    lastTurned = "right";
                     actionQueue.add(turnRight());
                     actionQueue.add(turnRight());
                     actionQueue.add(echo());
@@ -124,13 +132,27 @@ public class GridSearch implements Phase {
                 case 6:
                     logger.info("step 6");
                     actionLog+="6";
-                    lastTurned = "left";
                     actionQueue.add(turnLeft());
                     actionQueue.add(turnLeft());
                     actionQueue.add(echo());
                     step = 3;
                     break;
-                
+                case 7:
+                    logger.info("7");
+                    actionLog += "7";
+                    if (lastTurned.equals("left")) {
+                        actionQueue.add(turnRight());
+                        actionQueue.add(executor.fly());
+                        actionQueue.add(turnRight());
+                        lastTurned = "left";
+                    } else {
+                        actionQueue.add(turnLeft());
+                        actionQueue.add(executor.fly());
+                        actionQueue.add(turnLeft());
+                        lastTurned = "right";
+                    }
+                    step = 3;
+                    break;
                 default:
                     actionQueue.add(executor.stop());
                     break;

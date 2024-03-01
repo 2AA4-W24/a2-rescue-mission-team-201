@@ -31,7 +31,7 @@ public class StateController {
         actionTracker.setLastAction("echo",direction);
     }
     public void turn(String direction) {
-        locationTracker.setHeading(direction);
+        locationTracker.turn(direction);
         actionTracker.incrementActionsCompleted();
         actionTracker.setLastAction("heading",direction);
     }
