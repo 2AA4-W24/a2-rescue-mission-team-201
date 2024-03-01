@@ -39,13 +39,20 @@ public class Interpreter {
     public int getBattery() {
         return battery.getLevel();
     }
-    public Echo[] lastThreeEchos() {
+    public Echo[] lastNumEchos(int num) {
         ArrayList<Echo> echos = extras.getEchos();
-        int last = echos.size()-1;
-        Echo lastEcho = echos.get(last);
-        Echo secondLastEcho = echos.get(last-1);
-        Echo thirdLastEcho = echos.get(last-2);
-        return new Echo[] {thirdLastEcho, secondLastEcho, lastEcho};
+        if (num > echos.size()) {
+            num = echos.size();
+        }
+        Echo[] lastEchos = new Echo[num];
+
+        for (int i=0; i<num; i++) {
+            lastEchos[num-i-1] = echos.get(echos.size()-i-1);
+        }
+        return lastEchos;
+    }
+    public Coordinate getCurrent() {
+        return locationTracker.getCurrent();
     }
 
 }

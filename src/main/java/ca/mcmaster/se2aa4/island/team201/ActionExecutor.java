@@ -26,6 +26,7 @@ public class ActionExecutor {
         return createActionObject("stop");
     }
     public JSONObject fly() {
+        logger.info("fly");
         stateController.fly();
         return createActionObject("fly");
     }
