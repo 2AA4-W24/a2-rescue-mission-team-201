@@ -25,6 +25,10 @@ public class ActionExecutor {
         stateController.fly();
         return createActionObject("fly");
     }
+    public JSONObject turn(String direction) {
+        stateController.turn(direction);
+        return createActionObject("heading",direction);
+    }
     private JSONObject createActionObject(String action, String direction) {
 
         JSONObject decision = new JSONObject();

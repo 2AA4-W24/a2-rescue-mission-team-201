@@ -11,9 +11,14 @@ public class FindIsland implements Phase {
     ActionExecutor executor; 
     Interpreter interpreter;
     public FindIsland(ActionExecutor executor, Interpreter interpreter) {
-        
+        this.executor = executor;
+        this.interpreter = interpreter;
     }
 
+    public JSONObject turnRight() {
+        String right = interpreter.getRightDirection();
+        return executor.turn(right);
+    }
     public JSONObject takeDecision() {
         return executor.stop();
     }
