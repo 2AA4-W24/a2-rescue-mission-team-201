@@ -10,7 +10,7 @@ public class Extras {
     int mostRecentEcho;
     String mostRecentScan;
     public void updateState(JSONObject extraInfo) {
-        //logger.info(extraInfo.toString());
+        
     }
     
 

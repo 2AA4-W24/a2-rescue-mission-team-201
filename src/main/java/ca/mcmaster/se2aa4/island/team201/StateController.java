@@ -9,7 +9,7 @@ public class StateController {
     private Extras extras;
     private Map map;
     private Battery battery;
-
+    private String mostRecentAction; 
     public StateController(LocationTracker locationTracker, Map map, Extras extras, Battery battery){ 
         this.locationTracker = locationTracker;
         this.extras = extras;
@@ -33,6 +33,7 @@ public class StateController {
 
     public void fly() {
         locationTracker.moveForward();
+        mostRecentAction = "fly";
     }
 
     public void handleResults(JSONObject response) {
