@@ -19,24 +19,20 @@ public class StateController {
         this.battery = battery;
     }
 
-    public void handleStateChange(JSONObject response) {
-        if (response.has("cost")) {
-            int cost = response.getInt("cost");
-            battery.decreaseLevelBy(cost);
-        }
-        if (response.has("extras")) {
-            JSONObject extras = response.getJSONObject("extras");
-            if (extras.has("direction")) {
-                String newDirection = extras.getString("direction");
-                locationTracker.setHeading(newDirection);
-            }
-        }
-    }
 
     public void fly() {
         locationTracker.moveForward();
         actionTracker.incrementActionsCompleted();
         actionTracker.setLastAction("fly");
+    }
+    public void echo(String direction) {
+        actionTracker.incrementActionsCompleted();
+        actionTracker.setLastAction("echo",direction);
+    }
+    public void turn(String direction) {
+        locationTracker.setHeading(direction);
+        actionTracker.incrementActionsCompleted();
+        actionTracker.setLastAction("heading",direction);
     }
 
     public void handleResults(JSONObject response) {
@@ -45,11 +41,14 @@ public class StateController {
             logger.info("The cost was {}", cost);
             battery.decreaseLevelBy(cost);
         }
-        logger.info("** Response received:\n"+response.toString(2));
-        logger.info("response {}", response.toString());
+        //logger.info("** Response received:\n"+response.toString(2));
+        //logger.info("response {}", response.toString());
 
         JSONObject extraInfo = response.getJSONObject("extras");
-        extras.updateState(extraInfo);
+        if (!(extraInfo.length() == 0)) {
+            extras.updateState(extraInfo, actionTracker.lastAction());
+        }
         //logger.info("Additional information received: {}", extraInfo);
     }
+
 }

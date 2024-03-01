@@ -2,10 +2,12 @@ package ca.mcmaster.se2aa4.island.team201;
 
 public class ActionTracker {
     private int numActionsCompleted =0;
-    private String lastActionCompleted; 
-
+    private String[] lastActionCompleted; 
     public void setLastAction(String action) {
-        lastActionCompleted = action;
+        lastActionCompleted = new String[] {action, "N/A"};
+    }
+    public void setLastAction(String action, String direction) {
+        lastActionCompleted = new String[] {action, direction};
     }
     public void incrementActionsCompleted() {
         numActionsCompleted = numActionsCompleted+1;
@@ -13,7 +15,11 @@ public class ActionTracker {
     public int numberOfActions() {
         return numActionsCompleted;
     }
-    public String lastAction() {
+
+    public String[] lastActionWithDirection() {
         return lastActionCompleted;
+    }
+    public String lastAction() {
+        return lastActionCompleted[0];
     }
 }

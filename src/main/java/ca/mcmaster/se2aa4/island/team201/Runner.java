@@ -5,7 +5,7 @@ import static eu.ace_design.island.runner.Runner.run;
 import java.io.File;
 
 public class Runner {
-
+    
     public static void main(String[] args) {
         String filename = args[0];
         try {

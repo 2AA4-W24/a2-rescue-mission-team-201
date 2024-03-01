@@ -1,21 +1,41 @@
 package ca.mcmaster.se2aa4.island.team201;
 
-public class LocationTracker {
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+public class LocationTracker {
     private String facing;
     private Coordinate current;
-
+    private final Logger logger = LogManager.getLogger();
+    public LocationTracker(String heading) {
+        facing = heading;
+        current = new Coordinate(0,0);
+        logger.info("Coordinates are " + Integer.toString(current.x()) + "," + Integer.toString(current.y()));
+    }
     public Coordinate getCurrent() {
         return current;
     }
     public void moveForward() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'moveForward'");
+        switch (facing) {
+            case "N":
+                current = current.north();
+                break;
+            case "E":
+                current = current.east();
+                break;
+            case "S":
+                current = current.south();
+                break;
+            case "W":
+                current = current.west();
+                break;
+            default:
+                break;
+        }
     }
 
     public void setHeading(String newDirection) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setHeading'");
+        facing = newDirection;
     }
     public String getDirection() {
         return facing;

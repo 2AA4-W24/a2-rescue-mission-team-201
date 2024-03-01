@@ -7,7 +7,12 @@ public class Coordinate {
         this.x = x;
         this.y = y;
     }
-
+    public int x() {
+        return x;
+    }
+    public int y() {
+        return y; 
+    }
     public Coordinate north() {
         return new Coordinate(x,y+1);
     }
