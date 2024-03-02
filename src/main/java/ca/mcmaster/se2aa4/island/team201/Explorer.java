@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import ca.mcmaster.se2aa4.island.team201.phases.FindIsland;
+import ca.mcmaster.se2aa4.island.team201.phases.GoToIsland;
 import ca.mcmaster.se2aa4.island.team201.phases.GridSearch;
 
 public class Explorer implements IExplorerRaid {
@@ -36,7 +37,8 @@ public class Explorer implements IExplorerRaid {
         Interpreter interpreter = new Interpreter(actionTracker,location,map,extras,battery);
         ActionExecutor actionExecutor = new ActionExecutor(stateController);
         Phase FindIsland = new FindIsland(actionExecutor, interpreter);
-        Phase[] phaseList = {FindIsland};
+        Phase GoToIsland = new GoToIsland(actionExecutor, interpreter);
+        Phase[] phaseList = {FindIsland,GoToIsland};
         navigator = new Navigator(phaseList);
 
         logger.info("The drone is facing {}", heading);

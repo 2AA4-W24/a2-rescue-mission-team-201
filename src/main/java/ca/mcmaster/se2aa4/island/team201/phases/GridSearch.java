@@ -175,7 +175,12 @@ public class GridSearch implements Phase {
         logger.info("doing {}", actionToDo.getString("action"));
         return actionToDo;
     }
+    public void setInfoNeeded(JSONObject info) {
 
+    } 
+    public JSONObject results() {
+        return new JSONObject();
+    }
     public Boolean done() {
         return true;
     }

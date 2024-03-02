@@ -5,5 +5,6 @@ import org.json.JSONObject;
 public interface Phase {
     public Boolean done();
     public JSONObject takeDecision();
-
+    public void setInfoNeeded(JSONObject info);
+    public JSONObject results();
 }
