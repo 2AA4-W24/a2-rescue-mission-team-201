@@ -30,7 +30,7 @@ public class Interpreter {
     public String getLeftDirection() {
         return locationTracker.getLeftDirection();
     }
-    public String lastAction() {
+    public Action lastAction() {
         return actionTracker.lastAction();
     }
     public Echo lastEcho() {
@@ -39,6 +39,9 @@ public class Interpreter {
     public int getBattery() {
         return battery.getLevel();
     }
+    
+    // Note that the most recent echos will be on the right (end of array), similar to how.
+    // they are stored in extras
     public Echo[] lastNumEchos(int num) {
         ArrayList<Echo> echos = extras.getEchos();
         if (num > echos.size()) {
@@ -46,6 +49,7 @@ public class Interpreter {
         }
         Echo[] lastEchos = new Echo[num];
 
+        
         for (int i=0; i<num; i++) {
             lastEchos[num-i-1] = echos.get(echos.size()-i-1);
         }

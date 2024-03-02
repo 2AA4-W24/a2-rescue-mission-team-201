@@ -19,9 +19,11 @@ public class FindIsland implements Phase {
     int actionCount =0;
     ActionExecutor executor; 
     int state = 1;
+    String doNotEchoSide = "none";
     String actionLog = "";
     int mapWidth = 0;
     Boolean done = false;
+    JSONObject result = new JSONObject();
     Interpreter interpreter;
     String shouldTurn = "";
     Queue<JSONObject> actionQueue = new LinkedList<JSONObject>();
@@ -88,16 +90,35 @@ public class FindIsland implements Phase {
                     state = 2;
                     break;
                 case 2:
-                    Echo lastEcho = interpreter.lastEcho();
-                    if (lastEcho.found() == "GROUND") {
-
-                    }
+                    actionQueue.add(executor.fly());
+                    actionQueue.add(echoLeft());
+                    actionQueue.add(echoRight());
+                    state = 3;
                     break;
                 case 3:
+                    Echo[] last2echos = interpreter.lastNumEchos(2);
+                    for (int i=0; i < last2echos.length; i++) {
+                        if (last2echos[i].range() < 8) {
+                            if (i == 0) {
+                                doNotEchoSide = "left";
+                            } else if (i == 1) {
+                                doNotEchoSide = "right";
+                            }
+                        }
+                    }
+                    state = 4;
                     break;
                 case 4:
-                    break;
-                case 5:
+                    actionQueue.add(executor.fly());
+                    if (doNotEchoSide.equals("left")) {
+                        actionQueue.add(echoRight());
+                    } else if (doNotEchoSide.equals("right")) {
+                        actionQueue.add(echoLeft());
+                    } else {
+                        actionQueue.add(echoLeft());
+                        actionQueue.add(echoRight());
+                    }
+                    state = 4;
                     break;
                 default:
                     actionQueue.add(executor.stop());
@@ -117,6 +138,21 @@ public class FindIsland implements Phase {
     }
 
     public Boolean done() {
+        Echo lastEcho = interpreter.lastEcho();
+        if (lastEcho == null) {
+            return false;
+        }
+        logger.info("i found {}", lastEcho.found());
+        if (lastEcho.found().equals("GROUND")) {
+            done = true;
+            result.put("rangeOfIslandRelativeToDrone", lastEcho.range());
+            result.put("directionOfIslandRelativeToDrone", lastEcho.direction());
+        }
+
+
         return done;
+    }
+    public JSONObject results() {
+        return result;
     }
 }

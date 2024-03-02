@@ -13,7 +13,7 @@ public class Navigator {
         this.currentPhase = phases[currentPhaseIndex];
     }
 
-    private void phaseChangeLogic() {
+    private void changePhaseIfNeeded() {
         if (currentPhase.done()) {
             goToNextPhase();
         }
@@ -24,7 +24,7 @@ public class Navigator {
     }
     public String takeDecision() {
 
-        phaseChangeLogic();
+        changePhaseIfNeeded();
 
         JSONObject decision = currentPhase.takeDecision();
         return decision.toString();
