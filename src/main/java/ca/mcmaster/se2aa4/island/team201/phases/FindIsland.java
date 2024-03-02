@@ -142,7 +142,7 @@ public class FindIsland implements Phase {
         if (lastEcho == null) {
             return false;
         }
-        logger.info("i found {}", lastEcho.found());
+        logger.info("i found the {}", lastEcho.found());
         if (lastEcho.found().equals("GROUND")) {
             done = true;
             result.put("rangeOfIslandRelativeToDrone", lastEcho.range());
