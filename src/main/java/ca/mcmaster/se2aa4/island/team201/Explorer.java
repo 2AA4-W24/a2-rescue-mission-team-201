@@ -32,8 +32,8 @@ public class Explorer implements IExplorerRaid {
         LocationTracker location = new LocationTracker(heading);
         Extras extras = new Extras();
         ActionTracker actionTracker = new ActionTracker();
-        stateController = new StateController(actionTracker, location,map,extras,battery);
-        Interpreter interpreter = new Interpreter(actionTracker,location,map,extras,battery);
+        stateController = new StateController(actionTracker, location, map, extras, battery);
+        Interpreter interpreter = new Interpreter(actionTracker, location, map, extras, battery);
         ActionExecutor actionExecutor = new ActionExecutor(stateController);
         Phase phase = new GridSearch(actionExecutor, interpreter);
         navigator = new Navigator(phase);
