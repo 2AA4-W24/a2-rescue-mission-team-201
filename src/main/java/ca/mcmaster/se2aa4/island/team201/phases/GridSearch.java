@@ -77,7 +77,7 @@ public class GridSearch implements Phase {
     public JSONObject takeDecision() {
         logger.info(interpreter.numberOfActions());
         logger.info("battery {}", interpreter.getBattery());
-        if (interpreter.getBattery() < 50 || interpreter.numberOfActions() > 1200) {
+        if (interpreter.getBattery() < 50 || interpreter.numberOfActions() > 1220) {
             logger.info(actionLog);
             return executor.stop();
 
@@ -87,7 +87,7 @@ public class GridSearch implements Phase {
                 case 1:
                     actionLog+="1";
                     logger.info("step 1");
-                    flyForwardBy(14);
+                    flyForwardBy(13);
                     actionQueue.add(echoRight());
                     actionQueue.add(echoLeft());
                     step= 2;
@@ -103,7 +103,7 @@ public class GridSearch implements Phase {
                     actionLog+="3";
                     int blocksToFly = mapWidth-2;
                     logger.info("Let's fly forward by {} blocks", blocksToFly);
-                    flyForwardBy(22);
+                    flyForwardBy(27);
                     if (interpreter.getCurrent().y() < -40 && !turnedAround) {
                         step = 7;
                         turnedAround = true;

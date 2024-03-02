@@ -23,7 +23,7 @@ public class Extras {
         }
 
     }
-    public Echo mostRecentEcho() {
+    public Echo lastEcho() {
         return mostRecentEcho;
     }
     public ArrayList<Echo> getEchos() {

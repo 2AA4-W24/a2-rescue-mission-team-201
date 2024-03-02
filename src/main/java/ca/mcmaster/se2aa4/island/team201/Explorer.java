@@ -35,8 +35,9 @@ public class Explorer implements IExplorerRaid {
         stateController = new StateController(actionTracker, location,map,extras,battery);
         Interpreter interpreter = new Interpreter(actionTracker,location,map,extras,battery);
         ActionExecutor actionExecutor = new ActionExecutor(stateController);
-        Phase phase = new GridSearch(actionExecutor, interpreter);
-        navigator = new Navigator(phase);
+        Phase FindIsland = new FindIsland(actionExecutor, interpreter);
+        Phase[] phaseList = {FindIsland};
+        navigator = new Navigator(phaseList);
 
         logger.info("The drone is facing {}", heading);
         logger.info("Battery level is {}", battery.getLevel());

@@ -33,8 +33,8 @@ public class Interpreter {
     public String lastAction() {
         return actionTracker.lastAction();
     }
-    public Echo mostRecentEcho() {
-        return extras.mostRecentEcho();
+    public Echo lastEcho() {
+        return extras.lastEcho();
     }
     public int getBattery() {
         return battery.getLevel();
