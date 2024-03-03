@@ -119,7 +119,6 @@ public class FindIsland implements Phase {
         logger.info("doing {}", actionToDo.getString("action"));
         return actionToDo;
     }
-
     public Boolean done() {
         Echo lastEcho = interpreter.lastEcho();
         if (lastEcho == null) {
