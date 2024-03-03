@@ -1,29 +1,51 @@
 package ca.mcmaster.se2aa4.island.team201;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 public class StateController {
     
-    private Location map;
+    private final Logger logger = LogManager.getLogger();
+    private LocationTracker locationTracker;
+    private Extras extras;
+    private Map map;
     private Battery battery;
-
-    public StateController(Location map, Battery battery){
-        this.map = map;
-        this.battery = battery;
-    }
-
-    public void handleStateChange(JSONObject response) {
-        if (response.has("cost")) {
-            int cost = response.getInt("cost");
-            battery.decreaseLevel(cost);
-        }
-        if (response.has("extras")) {
-            JSONObject extras = response.getJSONObject("extras");
-            if (extras.has("direction")) {
-                String newDirection = extras.getString("direction");
-            }
-        }
-    }
+    private String mostRecentAction;
+    private ActionTracker actionTracker; 
+    public StateController(ActionTracker actionTracker, LocationTracker locationTracker, Map map, Extras extras, Battery battery){ 
+        this.locationTracker = locationTracker;
+        this.actionTracker = actionTracker;
+        this.extras = extras;
 
     public void fly() {
-        map.moveForward();
+        locationTracker.moveForward();
+        actionTracker.incrementActionsCompleted();
+        actionTracker.setLastAction("fly");
     }
+    public void echo(String direction) {
+        logger.info("here");
+        actionTracker.incrementActionsCompleted();
+        actionTracker.setLastAction("echo",direction);
+    }
+    public void turn(String direction) {
+        locationTracker.setHeading(direction);
+        actionTracker.incrementActionsCompleted();
+        actionTracker.setLastAction("heading",direction);
+    }
+
+    public void handleResults(JSONObject response) {
+        if (response.has("cost")) {
+            Integer cost = response.getInt("cost");
+            logger.info("The cost was {}", cost);
+            battery.decreaseLevelBy(cost);
+        }
+        //logger.info("** Response received:\n"+response.toString(2));
+        //logger.info("response {}", response.toString());
+
+        JSONObject extraInfo = response.getJSONObject("extras");
+        if (!(extraInfo.length() == 0)) {
+            extras.updateState(extraInfo, actionTracker.lastAction());
+        }
+        //logger.info("Additional information received: {}", extraInfo);
+    }
+
 }

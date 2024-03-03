@@ -11,7 +11,6 @@ public class Navigator {
 
     public String takeDecision() {
         JSONObject decision = phase.takeDecision();
-        
         return decision.toString();
     }
 
