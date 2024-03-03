@@ -13,17 +13,18 @@ public class Extras {
     ArrayList<Echo> echos = new ArrayList<Echo>();
     String mostRecentScan;
     
-    public void updateState(JSONObject extraInfo, String lastAction) {
+    public void updateState(JSONObject extraInfo, Action lastAction) {
         logger.info("last action is " + lastAction);
         if (extraInfo.has("range")) {
             int range = extraInfo.getInt("range");
             String found = extraInfo.getString("found");
-            mostRecentEcho = new Echo(range, found);
+            String direction = lastAction.direction();
+            mostRecentEcho = new Echo(range, found, direction);
             echos.add(mostRecentEcho);
         }
 
     }
-    public Echo mostRecentEcho() {
+    public Echo lastEcho() {
         return mostRecentEcho;
     }
     public ArrayList<Echo> getEchos() {
