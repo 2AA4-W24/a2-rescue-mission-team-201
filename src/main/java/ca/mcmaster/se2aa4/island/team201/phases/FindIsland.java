@@ -43,7 +43,7 @@ public class FindIsland implements Phase {
         } else {
         return executor.stop();
         }
-    }
+
 
     public Boolean done() {
         return true;

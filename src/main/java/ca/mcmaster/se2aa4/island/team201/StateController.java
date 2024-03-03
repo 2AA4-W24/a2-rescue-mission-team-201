@@ -15,10 +15,6 @@ public class StateController {
         this.locationTracker = locationTracker;
         this.actionTracker = actionTracker;
         this.extras = extras;
-        this.map = map;
-        this.battery = battery;
-    }
-
 
     public void fly() {
         locationTracker.moveForward();
