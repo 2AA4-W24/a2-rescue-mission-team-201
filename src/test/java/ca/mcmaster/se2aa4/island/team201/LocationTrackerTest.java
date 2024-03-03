@@ -7,7 +7,13 @@ public class LocationTrackerTest {
     void changesDirectionCorrectly() {
         LocationTracker tracker = new LocationTracker("N");
         tracker.setHeading("E");
-        assertEquals("E", tracker.getDirection()); //forgot commit message
+        assertEquals("E", tracker.getDirection());
     }
 
+    @Test
+    void movesForwardCorrectly() {
+        LocationTracker tracker = new LocationTracker("N");
+        tracker.moveForward();
+        assertEquals(new Coordinate(0, 1), tracker.getCurrent());
+    }
 }
