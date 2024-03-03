@@ -9,13 +9,14 @@ public class StateController {
     private Extras extras;
     private Map map;
     private Battery battery;
-    private String mostRecentAction;
     private ActionTracker actionTracker; 
     public StateController(ActionTracker actionTracker, LocationTracker locationTracker, Map map, Extras extras, Battery battery){ 
         this.locationTracker = locationTracker;
         this.actionTracker = actionTracker;
+        this.battery = battery;
+        this.map = map;
         this.extras = extras;
-
+    }
     public void fly() {
         locationTracker.moveForward();
         actionTracker.incrementActionsCompleted();
