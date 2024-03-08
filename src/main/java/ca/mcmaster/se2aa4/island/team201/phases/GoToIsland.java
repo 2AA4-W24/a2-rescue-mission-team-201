@@ -74,6 +74,7 @@ public class GoToIsland implements Phase {
         while (actionQueue.isEmpty()) {
             switch (state) {
                 case 1:
+                // Turn to the island direction
                     actionQueue.add(executor.turn(directionToIsland));
                     state = 2;
                     break;
