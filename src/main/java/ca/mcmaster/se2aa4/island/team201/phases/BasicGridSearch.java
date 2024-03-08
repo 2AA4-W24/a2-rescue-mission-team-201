@@ -14,23 +14,24 @@ import ca.mcmaster.se2aa4.island.team201.Interpreter;
 import ca.mcmaster.se2aa4.island.team201.Phase;
 import ca.mcmaster.se2aa4.island.team201.Action;
 
-public class FindIsland implements Phase {
+public class BasicGridSearch implements Phase {
     private final Logger logger = LogManager.getLogger();
     int actionCount =0;
     ActionExecutor executor; 
     int state = 1;
+    int initialDistanceFromIsland;
+    String directionToIsland; 
+    String initialDirection;
     String doNotEchoSide = "none";
     String actionLog = "";
     int mapWidth = 0;
-    String initialDirection;
     Boolean done = false;
     JSONObject result = new JSONObject();
     Interpreter interpreter;
     Queue<JSONObject> actionQueue = new LinkedList<JSONObject>();
-    public FindIsland(ActionExecutor executor, Interpreter interpreter) {
+    public BasicGridSearch(ActionExecutor executor, Interpreter interpreter) {
         this.executor = executor;
         this.interpreter = interpreter;
-        initialDirection = interpreter.facing();
     }
     public JSONObject echoRight() {
         String right = interpreter.getRightDirection();
@@ -53,54 +54,29 @@ public class FindIsland implements Phase {
         String left = interpreter.getLeftDirection();
         return executor.echo(left);
     }
-    
+    public void flyForwardBy(int blocks) {
+        for (int i=0; i<blocks; i++) {
+            actionQueue.add(executor.fly());
+        }
+    }
+    public void setInfoNeeded(JSONObject info) {
+        initialDirection = info.getString("initialDirection");
+    } 
     public JSONObject takeDecision() {
-        logger.info("action number {}", interpreter.numberOfActions());
+        logger.info(interpreter.numberOfActions());
         logger.info("battery {}", interpreter.getBattery());
         if (interpreter.getBattery() < 50 || interpreter.numberOfActions() > 1220) {
             logger.info(actionLog);
             return executor.stop();
-
         }
         while (actionQueue.isEmpty()) {
             switch (state) {
                 case 1:
-                    actionQueue.add(echo());
-                    state = 2;
-                    break;
-                case 2:
-                    actionQueue.add(executor.fly());
-                    actionQueue.add(echoLeft());
-                    actionQueue.add(echoRight());
-                    state = 3;
-                    break;
-                case 3:
-                    Echo[] last2echos = interpreter.lastNumEchos(2);
-                    for (int i=0; i < last2echos.length; i++) {
-                        if (last2echos[i].range() < 8) {
-                            if (i == 0) {
-                                doNotEchoSide = "left";
-                            } else if (i == 1) {
-                                doNotEchoSide = "right";
-                            }
-                        }
-                    }
-                    state = 4;
-                    break;
-                case 4:
-                    actionQueue.add(executor.fly());
-                    if (doNotEchoSide.equals("left")) {
-                        actionQueue.add(echoRight());
-                    } else if (doNotEchoSide.equals("right")) {
-                        actionQueue.add(echoLeft());
-                    } else {
-                        actionQueue.add(echoLeft());
-                        actionQueue.add(echoRight());
-                    }
-                    state = 4;
-                    break;
-                default:
+                logger.info("the intiial direction was " + initialDirection);
                     actionQueue.add(executor.stop());
+                    
+                    break;
+                default: 
                     break;
             }
         }
@@ -115,24 +91,9 @@ public class FindIsland implements Phase {
         logger.info("doing {}", actionToDo.getString("action"));
         return actionToDo;
     }
+
     public Boolean done() {
-        Echo lastEcho = interpreter.lastEcho();
-        if (lastEcho == null) {
-            return false;
-        }
-        logger.info("i found the {}", lastEcho.found());
-        if (lastEcho.found().equals("GROUND")) {
-            done = true;
-            result.put("rangeOfIslandRelativeToDrone", lastEcho.range());
-            result.put("directionOfIslandRelativeToDrone", lastEcho.direction());
-            result.put("initialDirection", initialDirection);
-        }
-
-
         return done;
-    }
-    public void setInfoNeeded(JSONObject info) {
-        // Does not require info
     }
     public JSONObject results() {
         return result;
