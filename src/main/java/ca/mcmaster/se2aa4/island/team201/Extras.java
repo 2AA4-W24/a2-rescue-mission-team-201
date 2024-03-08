@@ -14,8 +14,8 @@ public class Extras {
     String mostRecentScan;
     
     public void updateState(JSONObject extraInfo, Action lastAction) {
-        logger.info("last action is " + lastAction);
-        if (extraInfo.has("range")) {
+        logger.info("last action is " + lastAction.name());
+        if (lastAction.name().equals("echo")) {
             int range = extraInfo.getInt("range");
             String found = extraInfo.getString("found");
             String direction = lastAction.direction();

@@ -19,7 +19,8 @@ public class GoToIsland implements Phase {
     int actionCount =0;
     ActionExecutor executor; 
     int state = 1;
-    JSONObject previousPhase; 
+    int initialDistanceFromIsland;
+    String directionToIsland; 
     String doNotEchoSide = "none";
     String actionLog = "";
     int mapWidth = 0;
@@ -55,11 +56,13 @@ public class GoToIsland implements Phase {
     public void flyForwardBy(int blocks) {
         for (int i=0; i<blocks; i++) {
             actionQueue.add(executor.fly());
-            actionQueue.add(executor.scan());
         }
     }
     public void setInfoNeeded(JSONObject info) {
-        previousPhase = info;
+        initialDistanceFromIsland = info.getInt("rangeOfIslandRelativeToDrone");
+        directionToIsland = info.getString("directionOfIslandRelativeToDrone");
+        result.put("initialDirection", info.getString("initialDirection"));
+
     } 
     public JSONObject takeDecision() {
         logger.info(interpreter.numberOfActions());
@@ -71,7 +74,17 @@ public class GoToIsland implements Phase {
         while (actionQueue.isEmpty()) {
             switch (state) {
                 case 1:
-                    actionQueue.add(executor.stop());
+                // Turn to the island direction
+                    actionQueue.add(executor.turn(directionToIsland));
+                    state = 2;
+                    break;
+                case 2:
+                    flyForwardBy(initialDistanceFromIsland-1);
+                    state = 3;
+                    break;
+                case 3:
+                    actionQueue.add(executor.scan());
+                    done = true;
                     break;
                 default: 
                     break;
@@ -90,11 +103,6 @@ public class GoToIsland implements Phase {
     }
 
     public Boolean done() {
-        Echo lastEcho = interpreter.lastEcho();
-        if (lastEcho == null) {
-            return false;
-        }
-
         return done;
     }
     public JSONObject results() {
