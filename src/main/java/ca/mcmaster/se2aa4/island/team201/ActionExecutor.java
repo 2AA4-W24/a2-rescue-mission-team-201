@@ -38,6 +38,7 @@ public class ActionExecutor {
         return createActionObject("echo", direction);
     }
     public JSONObject scan() {
+        stateController.scan();
         return createActionObject("scan");
     }
     private JSONObject createActionObject(String action, String direction) {
