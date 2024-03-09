@@ -73,9 +73,13 @@ public class BasicGridSearch implements Phase {
             switch (state) {
                 case 1:
                 logger.info("the intiial direction was " + initialDirection);
-                    actionQueue.add(executor.stop());
-                    
+                    actionQueue.add(executor.scan());
+                    state = 2;
                     break;
+                case 2:
+                logger.info("the last scan biome is " + interpreter.lastScan().biomes()[0]);    
+                actionQueue.add(executor.stop());
+                break;
                 default: 
                     break;
             }

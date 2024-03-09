@@ -32,6 +32,10 @@ public class StateController {
         actionTracker.incrementActionsCompleted();
         actionTracker.setLastAction("heading",direction);
     }
+    public void scan() {
+        actionTracker.incrementActionsCompleted();
+        actionTracker.setLastAction("scan");
+    }
 
     public void handleResults(JSONObject response) {
         if (response.has("cost")) {

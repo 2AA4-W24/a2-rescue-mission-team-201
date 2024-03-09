@@ -39,7 +39,9 @@ public class Interpreter {
     public int getBattery() {
         return battery.getLevel();
     }
-    
+    public Scan lastScan() {
+        return extras.lastScan();
+    }
     // Note that the most recent echos will be on the right (end of array), similar to how.
     // they are stored in extras
     public Echo[] lastNumEchos(int num) {
@@ -54,6 +56,19 @@ public class Interpreter {
             lastEchos[num-i-1] = echos.get(echos.size()-i-1);
         }
         return lastEchos;
+    }
+    public Scan[] lastNumScans(int num) {
+        ArrayList<Scan> scans = extras.getScans();
+        if (num > scans.size()) {
+            num = scans.size();
+        }
+        Scan[] lastScans = new Scan[num];
+
+        
+        for (int i=0; i<num; i++) {
+            lastScans[num-i-1] = scans.get(scans.size()-i-1);
+        }
+        return lastScans;
     }
     public Coordinate getCurrent() {
         return locationTracker.getCurrent();
