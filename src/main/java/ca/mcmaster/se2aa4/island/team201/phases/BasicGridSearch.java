@@ -77,8 +77,27 @@ public class BasicGridSearch implements Phase {
                     state = 2;
                     break;
                 case 2:
-                logger.info("the last scan biome is " + interpreter.lastScan().biomes()[0]);    
-                actionQueue.add(executor.stop());
+                String biomeState2 = interpreter.lastScan().biomes()[0];
+                if (!biomeState2.equals("OCEAN")) {
+                    actionQueue.add(executor.fly());
+                    state = 1;
+                } else {
+                    actionQueue.add(executor.fly());
+                    actionQueue.add(executor.scan());
+                    state = 3;
+                }
+                logger.info("the last scan biome is " + interpreter.lastScan().biomes()[0]);  
+                break;
+                case 3: 
+                String biomeState3 = interpreter.lastScan().biomes()[0];
+                if (!biomeState3.equals("OCEAN")) {
+                    actionQueue.add(executor.fly());
+                    state = 1;
+                } else {
+                    // Time to turn because you saw the ocean twice
+                    actionQueue.add(executor.stop());
+                    state = 5;
+                }
                 break;
                 default: 
                     break;

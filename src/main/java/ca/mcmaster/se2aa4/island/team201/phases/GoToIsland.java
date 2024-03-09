@@ -79,7 +79,7 @@ public class GoToIsland implements Phase {
                     state = 2;
                     break;
                 case 2:
-                    flyForwardBy(initialDistanceFromIsland-1);
+                    flyForwardBy(initialDistanceFromIsland);
                     state = 3;
                     break;
                 case 3:
