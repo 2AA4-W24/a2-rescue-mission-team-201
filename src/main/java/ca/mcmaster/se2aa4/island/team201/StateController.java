@@ -34,14 +34,14 @@ public class StateController {
     }
     public void scan() {
         actionTracker.incrementActionsCompleted();
-        logger.info("setting last action as scan");
+        //logger.info("setting last action as scan");
         actionTracker.setLastAction("scan");
     }
 
     public void handleResults(JSONObject response) {
         if (response.has("cost")) {
             Integer cost = response.getInt("cost");
-            logger.info("The cost was {}", cost);
+            //logger.info("The cost was {}", cost);
             battery.decreaseLevelBy(cost);
         }
         //logger.info("** Response received:\n"+response.toString(2));

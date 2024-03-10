@@ -20,6 +20,7 @@ public class Extras {
             case "echo":
                 int range = extraInfo.getInt("range");
                 String found = extraInfo.getString("found");
+                logger.info("range of the last echo was {}", range);
                 String direction = lastAction.direction();
                 mostRecentEcho = new Echo(range, found, direction);
                 echos.add(mostRecentEcho);
