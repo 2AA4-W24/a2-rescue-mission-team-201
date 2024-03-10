@@ -11,6 +11,7 @@ import ca.mcmaster.se2aa4.island.team201.ActionExecutor;
 import ca.mcmaster.se2aa4.island.team201.Coordinate;
 import ca.mcmaster.se2aa4.island.team201.Echo;
 import ca.mcmaster.se2aa4.island.team201.Interpreter;
+import ca.mcmaster.se2aa4.island.team201.Map;
 import ca.mcmaster.se2aa4.island.team201.Phase;
 import ca.mcmaster.se2aa4.island.team201.Action;
 
@@ -18,12 +19,8 @@ public class BasicGridSearch implements Phase {
     private final Logger logger = LogManager.getLogger();
     ActionExecutor executor; 
     int state = 1;
-    int initialDistanceFromIsland;
     String directionToIsland; 
-    String initialDirection;
     String directionToTurn;
-    String doNotEchoSide = "none";
-    String actionLog = "";
     int mapWidth = 0;
     Boolean done = false;
     JSONObject result = new JSONObject();
@@ -32,21 +29,18 @@ public class BasicGridSearch implements Phase {
     public BasicGridSearch(ActionExecutor executor, Interpreter interpreter) {
         this.executor = executor;
         this.interpreter = interpreter;
+        interpreter.setDirectionOfLines(interpreter.facing());
     }
     public void echoRight() {
-        String right = interpreter.getRightDirection();
         actionQueue.add(new Action("echo","right"));
     }
     public void echo() {
-        String front = interpreter.facing();
         actionQueue.add(new Action("echo","front"));
     }
     public void turnRight() {
-        String right = interpreter.getRightDirection();
         actionQueue.add(new Action("heading","right"));
     }
     public void turnLeft() {
-        String left = interpreter.getLeftDirection();
 
         actionQueue.add(new Action("heading","left"));
     }
@@ -80,7 +74,6 @@ public class BasicGridSearch implements Phase {
         actionQueue.add(new Action("scan"));
     }
     public void echoLeft() {
-        String left = interpreter.getLeftDirection();
         actionQueue.add(new Action("echo","left"));
     }
     public void fly() {
@@ -113,17 +106,21 @@ public class BasicGridSearch implements Phase {
             turnLeft();
         }
     }
+    Boolean done1 = false;
     public JSONObject takeDecision() {
         //logger.info("battery {}", interpreter.getBattery());
-        if (interpreter.getBattery() < 50 || interpreter.numberOfActions() > 1500){
-            //logger.info(actionLog);
+        if (interpreter.getBattery() < 50 || interpreter.numberOfActions() > 1500 || done1 == true){
             return executor.stop();
         }
         while (actionQueue.isEmpty()) {
             switch (state) {
                 case 1:
                     scan();
-                    state = 4;
+                    Coordinate current =  interpreter.getCurrent();
+        if (interpreter.hasAlreadySearched(current.x())) {
+            done1 = true;
+        }
+                    state = 3;
                     break;
                 case 2:
                 if (interpreter.lastScanHadLand()) {
@@ -166,7 +163,9 @@ public class BasicGridSearch implements Phase {
                         scan();
                         echo();
                         directionToTurn = "left";
+                        
                     }
+                    interpreter.setLineSearched(interpreter.getCurrent().x());
                     state = 5;
                 } 
                 break;
@@ -235,9 +234,9 @@ public class BasicGridSearch implements Phase {
         if (actionQueue.isEmpty()) {
             logger.info("empty");
         }
-        //logger.info(actionLog);
         Coordinate current =  interpreter.getCurrent();
-        //logger.info("Coordinates (based on action queue): {} {}", current.x(), current.y());
+        
+        logger.info("Coordinates (based on action queue): {} {}", current.x(), current.y());
         
         return nextAction();
     }

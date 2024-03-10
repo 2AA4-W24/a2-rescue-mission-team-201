@@ -85,5 +85,13 @@ public class Interpreter {
     }
 
  
-
+    public void setDirectionOfLines(String direction) {
+        map.setDirectionOfLines(direction);
+    }
+    public void setLineSearched(int line) {
+        map.setLineSearched(line);
+    }
+    public Boolean hasAlreadySearched(int line) {
+        return map.hasAlreadySearched(line);
+    }
 }

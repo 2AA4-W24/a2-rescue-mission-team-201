@@ -88,6 +88,7 @@ public class GoToIsland implements Phase {
     public void flyForwardBy(int blocks) {
         for (int i=0; i<blocks; i++) {
             actionQueue.add(new Action("fly"));
+            scan();
         }
     }
     public void stop() {

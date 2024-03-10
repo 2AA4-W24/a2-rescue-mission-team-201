@@ -101,7 +101,7 @@ public class FindIsland implements Phase {
     public JSONObject takeDecision() {
         logger.info("action number {}", interpreter.numberOfActions());
         logger.info("battery {}", interpreter.getBattery());
-        if (interpreter.getBattery() < 50 || interpreter.numberOfActions() > 1220) {
+        if (interpreter.getBattery() < 50 || interpreter.numberOfActions() > 1250) {
             logger.info(actionLog);
             return executor.stop();
 
