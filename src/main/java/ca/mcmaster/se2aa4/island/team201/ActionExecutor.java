@@ -13,9 +13,6 @@ public class ActionExecutor {
         this.stateController = stateController;
     }
 
-    public String takeAction() {
-        return "{action}";
-    }
     private JSONObject createActionObject(String action) {
 
         JSONObject decision = new JSONObject();
@@ -40,6 +37,33 @@ public class ActionExecutor {
     public JSONObject scan() {
         stateController.scan();
         return createActionObject("scan");
+    }
+    public JSONObject execute(Action action) {
+        String name = action.name();
+        String direction = action.direction();
+        JSONObject actionObject;
+        switch (name) {
+            case "scan":
+                actionObject = scan();
+            break;
+            case "echo":
+                actionObject = echo(direction);
+                break;
+            case "stop":
+                actionObject = stop();
+                break;
+            case "fly":
+                actionObject = fly();
+                break;
+            case "heading":
+                actionObject = turn(direction);
+                break;
+            default:
+                actionObject = stop();
+            break;
+        }
+        
+        return actionObject;
     }
     private JSONObject createActionObject(String action, String direction) {
 

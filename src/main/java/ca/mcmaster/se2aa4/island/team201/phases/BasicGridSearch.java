@@ -16,74 +16,116 @@ import ca.mcmaster.se2aa4.island.team201.Action;
 
 public class BasicGridSearch implements Phase {
     private final Logger logger = LogManager.getLogger();
-    int actionCount =0;
+    int numActions =0;
     ActionExecutor executor; 
     int state = 1;
     int initialDistanceFromIsland;
     String directionToIsland; 
     String initialDirection;
+    String directionToTurn;
     String doNotEchoSide = "none";
     String actionLog = "";
     int mapWidth = 0;
     Boolean done = false;
     JSONObject result = new JSONObject();
     Interpreter interpreter;
-    Queue<JSONObject> actionQueue = new LinkedList<JSONObject>();
+    Queue<Action> actionQueue = new LinkedList<Action>();
     public BasicGridSearch(ActionExecutor executor, Interpreter interpreter) {
         this.executor = executor;
         this.interpreter = interpreter;
     }
-    public JSONObject echoRight() {
+    public void echoRight() {
         String right = interpreter.getRightDirection();
-        return executor.echo(right);
+        actionQueue.add(new Action("echo","right"));
     }
-    public JSONObject echo() {
+    public void echo() {
         String front = interpreter.facing();
-        return executor.echo(front);
+        actionQueue.add(new Action("echo","front"));
     }
-    public JSONObject turnRight() {
+    public void turnRight() {
         String right = interpreter.getRightDirection();
-        return executor.turn(right);
+        actionQueue.add(new Action("heading","right"));
     }
-    public JSONObject turnLeft() {
+    public void turnLeft() {
         String left = interpreter.getLeftDirection();
 
-        return executor.turn(left);
+        actionQueue.add(new Action("heading","left"));
     }
-    public JSONObject echoLeft() {
+    public void stop() {
+        actionQueue.add(new Action("stop"));
+    }
+    public Action addDirection(Action action) {
+        Action actionWithDirection;
+        String direction = action.direction();
+        switch (direction) {
+            case "left":
+                actionWithDirection = new Action(action.name(), interpreter.getLeftDirection());
+                break;
+            case "right":
+                actionWithDirection = new Action(action.name(), interpreter.getRightDirection());
+                break;
+            case "front":
+                actionWithDirection = new Action(action.name(), interpreter.facing());
+                break;
+            case "none":
+                actionWithDirection = action;
+                break;
+            default: 
+                actionWithDirection = action;
+                break;
+        }
+
+        return actionWithDirection;
+    }
+    public void scan() {
+        actionQueue.add(new Action("scan"));
+    }
+    public void echoLeft() {
         String left = interpreter.getLeftDirection();
-        return executor.echo(left);
+        actionQueue.add(new Action("echo","left"));
+    }
+    public void fly() {
+        actionQueue.add(new Action("fly"));
     }
     public void flyForwardBy(int blocks) {
         for (int i=0; i<blocks; i++) {
-            actionQueue.add(executor.fly());
+            actionQueue.add(new Action("fly"));
+            actionQueue.add(new Action("scan"));
         }
     }
+    public JSONObject nextAction() {
+        Action actionToDo = actionQueue.remove();
+        Action actionWithDirection = addDirection(actionToDo);
+        
+        logger.info("doing {}", actionToDo.name());
+        return executor.execute(actionWithDirection);
+    }
+    // no info needed
     public void setInfoNeeded(JSONObject info) {
-        initialDirection = info.getString("initialDirection");
     } 
     public JSONObject takeDecision() {
-        logger.info(interpreter.numberOfActions());
-        logger.info("battery {}", interpreter.getBattery());
-        if (interpreter.getBattery() < 50 || interpreter.numberOfActions() > 1220) {
-            logger.info(actionLog);
+        logger.info(numActions);
+        numActions++;
+        //logger.info("battery {}", interpreter.getBattery());
+        if (interpreter.getBattery() < 50 || numActions > 200) {
+            //logger.info(actionLog);
             return executor.stop();
         }
         while (actionQueue.isEmpty()) {
             switch (state) {
                 case 1:
                 logger.info("the intiial direction was " + initialDirection);
-                    actionQueue.add(executor.scan());
+                    scan();
                     state = 2;
                     break;
                 case 2:
                 String biomeState2 = interpreter.lastScan().biomes()[0];
                 if (!biomeState2.equals("OCEAN")) {
-                    actionQueue.add(executor.fly());
+                    fly();
                     state = 1;
                 } else {
-                    actionQueue.add(executor.fly());
-                    actionQueue.add(executor.scan());
+                    fly();
+                    scan();
                     state = 3;
                 }
                 logger.info("the last scan biome is " + interpreter.lastScan().biomes()[0]);  
@@ -91,13 +133,42 @@ public class BasicGridSearch implements Phase {
                 case 3: 
                 String biomeState3 = interpreter.lastScan().biomes()[0];
                 if (!biomeState3.equals("OCEAN")) {
-                    actionQueue.add(executor.fly());
+                    fly();
                     state = 1;
                 } else {
-                    // Time to turn because you saw the ocean twice
-                    actionQueue.add(executor.stop());
-                    state = 5;
-                }
+                    if (directionToTurn != null && directionToTurn.equals("left")) {
+                        turnLeft();
+                        turnLeft();
+                        echo();
+                        directionToTurn = "right";
+                    // If direction to turn is right or its the first turn
+                    } else {
+                        logger.info("does this RIGHT");
+                        turnRight();
+                        turnRight();
+                        scan();
+                        echo();
+                        directionToTurn = "left";
+                    }
+                    state = 4;
+                } 
+                break;
+                case 4:
+                    Echo lastEcho = interpreter.lastEcho();
+                    // If out of range, then turn around (island is not that way!)
+                    if (lastEcho.found().equals("OUT_OF_RANGE")) {
+                        fly();
+                        fly();
+                        // comment this scan out later.
+                        scan();
+                        turnRight();
+                        turnRight();
+                    // If ground is found, then go to ground, and then go to state 1 to enter scanning phase.
+                    } else if (lastEcho.found().equals("GROUND")) {
+                        flyForwardBy(lastEcho.range());
+                    }
+                    state = 1;
+                    
                 break;
                 default: 
                     break;
@@ -107,12 +178,11 @@ public class BasicGridSearch implements Phase {
         if (actionQueue.isEmpty()) {
             logger.info("empty");
         }
-        logger.info(actionLog);
+        //logger.info(actionLog);
         Coordinate current =  interpreter.getCurrent();
-        logger.info("Coordinates (based on action queue): {} {}", current.x(), current.y());
-        JSONObject actionToDo = actionQueue.remove();
-        logger.info("doing {}", actionToDo.getString("action"));
-        return actionToDo;
+        //logger.info("Coordinates (based on action queue): {} {}", current.x(), current.y());
+        
+        return nextAction();
     }
 
     public Boolean done() {

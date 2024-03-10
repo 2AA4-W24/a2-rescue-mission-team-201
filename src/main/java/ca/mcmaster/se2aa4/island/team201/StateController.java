@@ -34,6 +34,7 @@ public class StateController {
     }
     public void scan() {
         actionTracker.incrementActionsCompleted();
+        logger.info("setting last action as scan");
         actionTracker.setLastAction("scan");
     }
 
