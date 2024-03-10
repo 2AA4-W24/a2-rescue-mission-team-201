@@ -101,9 +101,21 @@ public class BasicGridSearch implements Phase {
     // no info needed
     public void setInfoNeeded(JSONObject info) {
     } 
+   
+    public void undoTurn() {
+        if (directionToTurn.equals("left")) {
+            turnRight();
+            fly();
+            turnRight();
+        } else if (directionToTurn.equals("right")) {
+            turnLeft();
+            fly();
+            turnLeft();
+        }
+    }
     public JSONObject takeDecision() {
         //logger.info("battery {}", interpreter.getBattery());
-        if (interpreter.getBattery() < 50 || interpreter.numberOfActions() > 750) {
+        if (interpreter.getBattery() < 50 || interpreter.numberOfActions() > 1500){
             //logger.info(actionLog);
             return executor.stop();
         }
@@ -111,23 +123,21 @@ public class BasicGridSearch implements Phase {
             switch (state) {
                 case 1:
                     scan();
-                    state = 2;
+                    state = 4;
                     break;
                 case 2:
-                String biomeState2 = interpreter.lastScan().biomes()[0];
-                if (!biomeState2.equals("OCEAN")) {
+                if (interpreter.lastScanHadLand()) {
                     fly();
                     state = 1;
                 } else {
                     fly();
                     scan();
-                    state = 3;
+                    state = 4;
                 }
                 logger.info("the last scan biome is " + interpreter.lastScan().biomes()[0]);  
                 break;
                 case 3:
-                String biomeState3 = interpreter.lastScan().biomes()[0];
-                if (!biomeState3.equals("OCEAN")) {
+                if (interpreter.lastScanHadLand()) {
                     fly();
                     state = 1;
                 } else {
@@ -138,8 +148,7 @@ public class BasicGridSearch implements Phase {
                 logger.info("the last scan biome is " + interpreter.lastScan().biomes()[0]);  
                 break;
                 case 4: 
-                String biomeState4 = interpreter.lastScan().biomes()[0];
-                if (!biomeState4.equals("OCEAN")) {
+                if (interpreter.lastScanHadLand()) {
                     fly();
                     state = 1;
                 } else {
@@ -165,29 +174,58 @@ public class BasicGridSearch implements Phase {
                     Echo lastEcho = interpreter.lastEcho();
                     // If out of range, then turn around (island is not that way!)
                     if (lastEcho.found().equals("OUT_OF_RANGE")) {
+                        // Go back to where you were before you scanned ocean 3 times. 
+                        fly();
                         fly();
                         fly();
                         // comment this scan out later.
                         logger.info("out of range found?");
                         scan();
-                        // Undo the last turn that you did, because you know that 
-                        // there is no land in this direction anymore. 
-                        if (directionToTurn.equals("left")) {
-                            turnRight();
-                            fly();
-                            turnRight();
-                        } else if (directionToTurn.equals("right")) {
-                            turnLeft();
-                            fly();
-                            turnLeft();
-                        }
+
+
+                        // Don't undo the turn until you find the whole line (range > 4)
+                        // State 6 will keep echoing until it finds the whole "line of land"
+                        state = 6;
                     // If ground is found, then go to ground, and then go to state 1 to enter scanning phase.
                     } else if (lastEcho.found().equals("GROUND")) {
                         logger.info("flying forward by {}", lastEcho.range());
                         flyForwardBy(lastEcho.range()+1);
+                        state = 1;
                     }
-                    state = 1;
                     
+                break;
+                case 6:
+                // Basically, if the direction to turn is left and you're in this state, (you only get to this
+                // state if you don't see land in front of you after turning. ) 
+                // You know that you shouldn't actually turn left because there isn't land in that direction
+                // The land is to your right.
+                // Keep echoing until you find when you're no longer beside land (this is to 
+                // ensure that you don't miss any)
+                    if (directionToTurn.equals("left")) {
+                        fly();
+                        fly();
+                        fly();
+                        scan();
+                        echoRight();
+                    }
+                    else if (directionToTurn.equals("right")) {
+                        fly();
+                        fly();
+                        fly();
+                        scan();
+                        echoLeft();
+                    }
+                    state = 7;
+                break;
+                case 7:
+                    Echo lastEchoState7 = interpreter.lastEcho();
+                    if (lastEchoState7.range() > 2) {
+                        undoTurn();
+                        echo();
+                        state = 5;
+                    } else {
+                        state = 6;
+                    }
                 break;
                 default: 
                     break;

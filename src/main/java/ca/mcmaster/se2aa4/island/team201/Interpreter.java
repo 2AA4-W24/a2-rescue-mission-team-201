@@ -70,6 +70,16 @@ public class Interpreter {
         }
         return lastScans;
     }
+    public Boolean lastScanHadLand() {
+        String[] biomes = lastScan().biomes();
+        for (String biome: biomes) {
+            if (!biome.equals("OCEAN")) {
+                return true;
+            }
+
+        }
+        return false;
+    }
     public Coordinate getCurrent() {
         return locationTracker.getCurrent();
     }
