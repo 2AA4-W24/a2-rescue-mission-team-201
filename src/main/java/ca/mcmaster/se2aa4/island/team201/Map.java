@@ -10,7 +10,7 @@ public class Map {
     String directionOfLines;
     String axisToSave = "x";
     ArrayList<Scan> creeks = new ArrayList<Scan>();
-    Scan site;
+    private Scan site;
 
     public void setDirectionOfLines(String direction) {
         this.directionOfLines = direction;
@@ -50,6 +50,16 @@ public class Map {
         Scan scanToCheck = new Scan(biomes, creeks, sites, current);
 
         addIfCreekOrSite(scanToCheck);
+    }
+    public Scan getSite() {
+        return site;
+    }
+    public Scan[] getCreeks() {
+        Scan[] creeksToReturn = new Scan[creeks.size()];
+        for (int i=0; i<creeks.size(); i++) {
+            creeksToReturn[i] = creeks.get(i);
+        }
+        return creeksToReturn;
     }
     private void addIfCreekOrSite(Scan scan) {
         // Saves in the map if its a creek or site

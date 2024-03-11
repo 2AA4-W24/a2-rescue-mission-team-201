@@ -50,7 +50,7 @@ public class StateController {
         JSONObject extraInfo = response.getJSONObject("extras");
         if (!(extraInfo.length() == 0)) {
             extras.updateState(extraInfo, actionTracker.lastAction(), locationTracker.getCurrent());
-            if (actionTracker.lastAction().equals("scan")) {
+            if (actionTracker.lastAction().name().equals("scan")) {
                 map.updateState(extraInfo, locationTracker.getCurrent());
             }
         }

@@ -66,7 +66,9 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public String deliverFinalReport() {
-        return "no creek found";
+        String finalreport = report.getReport();
+        logger.info(finalreport);
+        return finalreport;
     }
 
 }
