@@ -29,7 +29,6 @@ public class BasicGridSearch implements Phase {
     public BasicGridSearch(ActionExecutor executor, Interpreter interpreter) {
         this.executor = executor;
         this.interpreter = interpreter;
-        interpreter.setDirectionOfLines(interpreter.facing());
     }
     public void echoRight() {
         actionQueue.add(new Action("echo","right"));
@@ -93,6 +92,8 @@ public class BasicGridSearch implements Phase {
     }
     // no info needed
     public void setInfoNeeded(JSONObject info) {
+        
+        interpreter.setDirectionOfLines(interpreter.facing());
     } 
    
     public void undoTurn() {
@@ -110,6 +111,7 @@ public class BasicGridSearch implements Phase {
     public JSONObject takeDecision() {
         //logger.info("battery {}", interpreter.getBattery());
         if (interpreter.getBattery() < 50 || interpreter.numberOfActions() > 1500 || done1 == true){
+            logger.info("done1 is {}", done1);
             return executor.stop();
         }
         while (actionQueue.isEmpty()) {
@@ -117,9 +119,9 @@ public class BasicGridSearch implements Phase {
                 case 1:
                     scan();
                     Coordinate current =  interpreter.getCurrent();
-        if (interpreter.hasAlreadySearched(current.x())) {
-            done1 = true;
-        }
+                    if (interpreter.hasAlreadySearched(current)) {
+                        done1 = true;
+                    }
                     state = 3;
                     break;
                 case 2:
@@ -165,7 +167,7 @@ public class BasicGridSearch implements Phase {
                         directionToTurn = "left";
                         
                     }
-                    interpreter.setLineSearched(interpreter.getCurrent().x());
+                    interpreter.setLineSearched(interpreter.getCurrent());
                     state = 5;
                 } 
                 break;

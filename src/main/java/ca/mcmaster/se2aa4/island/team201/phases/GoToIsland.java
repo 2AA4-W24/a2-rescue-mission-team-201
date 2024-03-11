@@ -118,7 +118,10 @@ public class GoToIsland implements Phase {
             switch (state) {
                 case 1:
                 // Turn to the island direction
+                if (!interpreter.facing().equals(directionToIsland)) {
+
                     turnTo(directionToIsland);
+                }
                     state = 2;
                     break;
                 case 2:
