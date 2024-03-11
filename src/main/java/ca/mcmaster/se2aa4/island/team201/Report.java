@@ -1,7 +1,11 @@
 package ca.mcmaster.se2aa4.island.team201;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class Report {
     Interpreter interpreter;
+    private final Logger logger = LogManager.getLogger();
 
     public Report(Interpreter interpreter) {
         this.interpreter = interpreter;
@@ -25,13 +29,15 @@ public class Report {
                 double t1 = (double) dxs;
                 double t2 = (double) dxy;
                 double distance = Math.sqrt(t1 + t2);
-
                 if (distance < minDistance) {
                     minDistance = distance;
                     minIdx = i;
+                    
+                //logger.info("{} {}", creekScans[i].location().x(), creekScans[i].location().y());
                 }
 
             }
+            //logger.info("the site is {} {}", site.location().x(), site.location().y());
             String closestCreek = creekScans[minIdx].creeks()[0];
             return closestCreek;
         } else {
