@@ -14,12 +14,13 @@ public class Extras {
     ArrayList<Echo> echos = new ArrayList<Echo>();
     Scan mostRecentScan;
     ArrayList<Scan> scans = new ArrayList<Scan>();
-    public void updateState(JSONObject extraInfo, Action lastAction) {
+    public void updateState(JSONObject extraInfo, Action lastAction, Coordinate location) {
         logger.info("last action is " + lastAction.name());
         switch (lastAction.name()) {
             case "echo":
                 int range = extraInfo.getInt("range");
                 String found = extraInfo.getString("found");
+                logger.info("range of the last echo was {}", range);
                 String direction = lastAction.direction();
                 mostRecentEcho = new Echo(range, found, direction);
                 echos.add(mostRecentEcho);
@@ -52,7 +53,7 @@ public class Extras {
                         sites[i] = jsonSites.optString(i);
                     }
                 }
-                mostRecentScan = new Scan(biomes, creeks, sites);
+                mostRecentScan = new Scan(biomes, creeks, sites, location);
                 scans.add(mostRecentScan);
             default:
                 break;

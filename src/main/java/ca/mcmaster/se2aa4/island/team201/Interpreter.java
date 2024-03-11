@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 import javax.tools.JavaFileManager.Location;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class Interpreter {
     private ActionTracker actionTracker;
     private LocationTracker locationTracker;
@@ -11,6 +14,7 @@ public class Interpreter {
     private Map map;
     private Battery battery;
 
+    private final Logger logger = LogManager.getLogger();
     public Interpreter(ActionTracker actionTracker, LocationTracker locationTracker, Map map, Extras extras, Battery battery){ 
         this.actionTracker = actionTracker; 
         this.locationTracker = locationTracker;
@@ -70,10 +74,34 @@ public class Interpreter {
         }
         return lastScans;
     }
+    public Boolean lastScanHadLand() {
+        String[] biomes = lastScan().biomes();
+        for (String biome: biomes) {
+            if (!biome.equals("OCEAN")) {
+                return true;
+            }
+
+        }
+        return false;
+    }
     public Coordinate getCurrent() {
         return locationTracker.getCurrent();
     }
 
  
-
+    public void setDirectionOfLines(String direction) {
+        map.setDirectionOfLines(direction);
+    }
+    public void setLineSearched(Coordinate current) {
+        map.setLineSearched(current);
+    }
+    public Boolean hasAlreadySearched(Coordinate current) {
+        return map.hasAlreadySearched(current);
+    }
+    public Scan[] getCreeks() {
+        return map.getCreeks();
+    }
+    public Scan getSite() {
+        return map.getSite();
+    }
 }

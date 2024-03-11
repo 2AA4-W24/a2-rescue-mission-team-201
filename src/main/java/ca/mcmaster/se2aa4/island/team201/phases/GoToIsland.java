@@ -27,36 +27,79 @@ public class GoToIsland implements Phase {
     Boolean done = false;
     JSONObject result = new JSONObject();
     Interpreter interpreter;
-    Queue<JSONObject> actionQueue = new LinkedList<JSONObject>();
+    Queue<Action> actionQueue = new LinkedList<Action>();
     public GoToIsland(ActionExecutor executor, Interpreter interpreter) {
         this.executor = executor;
         this.interpreter = interpreter;
     }
-    public JSONObject echoRight() {
+    public void echoRight() {
         String right = interpreter.getRightDirection();
-        return executor.echo(right);
+        actionQueue.add(new Action("echo","right"));
     }
-    public JSONObject echo() {
+    public void echo() {
         String front = interpreter.facing();
-        return executor.echo(front);
+        actionQueue.add(new Action("echo","front"));
     }
-    public JSONObject turnRight() {
+    public void turnRight() {
         String right = interpreter.getRightDirection();
-        return executor.turn(right);
+        actionQueue.add(new Action("heading","right"));
     }
-    public JSONObject turnLeft() {
+    public void turnTo(String direction) {
+        actionQueue.add(new Action("heading",direction));
+    }
+    public void turnLeft() {
         String left = interpreter.getLeftDirection();
 
-        return executor.turn(left);
+        actionQueue.add(new Action("heading","left"));
     }
-    public JSONObject echoLeft() {
+    public Action addDirection(Action action) {
+        Action actionWithDirection;
+        String direction = action.direction();
+        switch (direction) {
+            case "left":
+                actionWithDirection = new Action(action.name(), interpreter.getLeftDirection());
+                break;
+            case "right":
+                actionWithDirection = new Action(action.name(), interpreter.getRightDirection());
+                break;
+            case "front":
+                actionWithDirection = new Action(action.name(), interpreter.facing());
+                break;
+            case "none":
+                actionWithDirection = action;
+                break;
+            default: 
+                actionWithDirection = action;
+                break;
+        }
+
+        return actionWithDirection;
+    }
+    public void scan() {
+        actionQueue.add(new Action("scan"));
+    }
+    public void echoLeft() {
         String left = interpreter.getLeftDirection();
-        return executor.echo(left);
+        actionQueue.add(new Action("echo","left"));
+    }
+    public void fly() {
+        actionQueue.add(new Action("fly"));
     }
     public void flyForwardBy(int blocks) {
         for (int i=0; i<blocks; i++) {
-            actionQueue.add(executor.fly());
+            actionQueue.add(new Action("fly"));
+            scan();
         }
+    }
+    public void stop() {
+        actionQueue.add(new Action("stop"));
+    }
+    public JSONObject nextAction() {
+        Action actionToDo = actionQueue.remove();
+        Action actionWithDirection = addDirection(actionToDo);
+        
+        logger.info("doing {}", actionToDo.name());
+        return executor.execute(actionWithDirection);
     }
     public void setInfoNeeded(JSONObject info) {
         initialDistanceFromIsland = info.getInt("rangeOfIslandRelativeToDrone");
@@ -75,15 +118,18 @@ public class GoToIsland implements Phase {
             switch (state) {
                 case 1:
                 // Turn to the island direction
-                    actionQueue.add(executor.turn(directionToIsland));
+                if (!interpreter.facing().equals(directionToIsland)) {
+
+                    turnTo(directionToIsland);
+                }
                     state = 2;
                     break;
                 case 2:
-                    flyForwardBy(initialDistanceFromIsland-1);
+                    flyForwardBy(initialDistanceFromIsland);
                     state = 3;
                     break;
                 case 3:
-                    actionQueue.add(executor.scan());
+                    scan();
                     done = true;
                     break;
                 default: 
@@ -97,9 +143,8 @@ public class GoToIsland implements Phase {
         logger.info(actionLog);
         Coordinate current =  interpreter.getCurrent();
         logger.info("Coordinates (based on action queue): {} {}", current.x(), current.y());
-        JSONObject actionToDo = actionQueue.remove();
-        logger.info("doing {}", actionToDo.getString("action"));
-        return actionToDo;
+        
+        return nextAction();
     }
 
     public Boolean done() {

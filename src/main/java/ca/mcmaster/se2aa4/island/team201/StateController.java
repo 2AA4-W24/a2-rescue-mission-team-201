@@ -34,13 +34,14 @@ public class StateController {
     }
     public void scan() {
         actionTracker.incrementActionsCompleted();
+        //logger.info("setting last action as scan");
         actionTracker.setLastAction("scan");
     }
 
     public void handleResults(JSONObject response) {
         if (response.has("cost")) {
             Integer cost = response.getInt("cost");
-            logger.info("The cost was {}", cost);
+            //logger.info("The cost was {}", cost);
             battery.decreaseLevelBy(cost);
         }
         //logger.info("** Response received:\n"+response.toString(2));
@@ -48,7 +49,10 @@ public class StateController {
 
         JSONObject extraInfo = response.getJSONObject("extras");
         if (!(extraInfo.length() == 0)) {
-            extras.updateState(extraInfo, actionTracker.lastAction());
+            extras.updateState(extraInfo, actionTracker.lastAction(), locationTracker.getCurrent());
+            if (actionTracker.lastAction().name().equals("scan")) {
+                map.updateState(extraInfo, locationTracker.getCurrent());
+            }
         }
         //logger.info("Additional information received: {}", extraInfo);
     }

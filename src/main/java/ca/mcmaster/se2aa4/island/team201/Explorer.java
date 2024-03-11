@@ -22,7 +22,7 @@ public class Explorer implements IExplorerRaid {
     
     private Navigator navigator;
     private StateController stateController;
-
+    private Report report; 
     @Override
     public void initialize(String s) {
         logger.info("** Initializing the Exploration Command Center");
@@ -42,7 +42,7 @@ public class Explorer implements IExplorerRaid {
         Phase BasicGridSearch = new BasicGridSearch(actionExecutor, interpreter);
         Phase[] phaseList = {FindIsland,GoToIsland,BasicGridSearch};
         navigator = new Navigator(phaseList);
-
+        report = new Report(interpreter);
         logger.info("The drone is facing {}", heading);
 
 
@@ -52,7 +52,6 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public String takeDecision() {
-        logger.info("==============START==========");
         return navigator.takeDecision();
     }
 
@@ -60,12 +59,16 @@ public class Explorer implements IExplorerRaid {
     public void acknowledgeResults(String s) {
         JSONObject response = new JSONObject(new JSONTokener(new StringReader(s)));
         stateController.handleResults(response);
-        logger.info("==============END==========");
+        logger.info("");
+        logger.info("========================");
+        logger.info("");
     }
 
     @Override
     public String deliverFinalReport() {
-        return "no creek found";
+        String finalreport = report.getReport();
+        logger.info(finalreport);
+        return finalreport;
     }
 
 }
