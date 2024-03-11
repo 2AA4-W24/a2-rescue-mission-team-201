@@ -22,7 +22,7 @@ public class Explorer implements IExplorerRaid {
     
     private Navigator navigator;
     private StateController stateController;
-
+    private Report report; 
     @Override
     public void initialize(String s) {
         logger.info("** Initializing the Exploration Command Center");
@@ -42,7 +42,7 @@ public class Explorer implements IExplorerRaid {
         Phase BasicGridSearch = new BasicGridSearch(actionExecutor, interpreter);
         Phase[] phaseList = {FindIsland,GoToIsland,BasicGridSearch};
         navigator = new Navigator(phaseList);
-
+        report = new Report(interpreter);
         logger.info("The drone is facing {}", heading);
 
 

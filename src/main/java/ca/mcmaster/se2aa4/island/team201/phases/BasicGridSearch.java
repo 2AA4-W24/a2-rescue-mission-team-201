@@ -122,7 +122,7 @@ public class BasicGridSearch implements Phase {
                     if (interpreter.hasAlreadySearched(current)) {
                         done1 = true;
                     }
-                    state = 3;
+                    state = 4;
                     break;
                 case 2:
                 if (interpreter.lastScanHadLand()) {
