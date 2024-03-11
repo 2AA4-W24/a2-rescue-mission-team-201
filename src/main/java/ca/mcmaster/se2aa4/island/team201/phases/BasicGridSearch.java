@@ -110,7 +110,7 @@ public class BasicGridSearch implements Phase {
     Boolean done1 = false;
     public JSONObject takeDecision() {
         //logger.info("battery {}", interpreter.getBattery());
-        if (interpreter.getBattery() < 50 || interpreter.numberOfActions() > 1500 || done1 == true){
+        if (interpreter.getBattery() < 50 || interpreter.numberOfActions() > 10000 || done1 == true){
             logger.info("done1 is {}", done1);
             return executor.stop();
         }
@@ -129,7 +129,6 @@ public class BasicGridSearch implements Phase {
                     fly();
                     state = 1;
                 } else {
-                    fly();
                     echo();
                     state = 4;
                 }
