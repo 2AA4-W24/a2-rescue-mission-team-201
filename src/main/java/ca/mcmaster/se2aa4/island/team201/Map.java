@@ -52,6 +52,7 @@ public class Map {
         addIfCreekOrSite(scanToCheck);
     }
     private void addIfCreekOrSite(Scan scan) {
+        // Saves in the map if its a creek or site
         if (scan.sites().length > 0) {
             site = scan;
         }
