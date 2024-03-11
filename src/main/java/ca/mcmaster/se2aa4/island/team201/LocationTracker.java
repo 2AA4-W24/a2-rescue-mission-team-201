@@ -86,9 +86,9 @@ public class LocationTracker {
         }
     }
     public void turn(String direction) {
-        setHeading(direction);
         current = getFront();
 
+        setHeading(direction);
         switch (direction) {
             case "N":
                 current = current.north();

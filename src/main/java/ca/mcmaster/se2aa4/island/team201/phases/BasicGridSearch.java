@@ -122,7 +122,7 @@ public class BasicGridSearch implements Phase {
                     if (interpreter.hasAlreadySearched(current)) {
                         done1 = true;
                     }
-                    state = 4;
+                    state = 2;
                     break;
                 case 2:
                 if (interpreter.lastScanHadLand()) {
@@ -130,7 +130,7 @@ public class BasicGridSearch implements Phase {
                     state = 1;
                 } else {
                     fly();
-                    scan();
+                    echo();
                     state = 4;
                 }
                 logger.info("the last scan biome is " + interpreter.lastScan().biomes()[0]);  
@@ -147,7 +147,7 @@ public class BasicGridSearch implements Phase {
                 logger.info("the last scan biome is " + interpreter.lastScan().biomes()[0]);  
                 break;
                 case 4: 
-                if (interpreter.lastScanHadLand()) {
+                if (interpreter.lastEcho().found().equals("GROUND")) {
                     fly();
                     state = 1;
                 } else {
