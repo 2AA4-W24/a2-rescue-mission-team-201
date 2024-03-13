@@ -41,5 +41,19 @@ public class StateControllerIntegrationTest {
     //    assertEquals("fly", actionTracker.lastAction(), "Last action should be 'fly'."); //comparing string to action again so doesnt work
     }
 
+    @Test
+    void testHandleResultsWithCostUpdatesBattery() {
+        // Given
+        JSONObject response = new JSONObject()
+                .put("cost", 10)
+                .put("extras", new JSONObject());
+
+        // when
+        stateController.handleResults(response);
+
+        //then
+        assertEquals(90, battery.getLevel(), "Battery level should decrease by 10 after handling results with a cost of 10.");
+    }
+
 
 }
