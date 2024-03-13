@@ -55,5 +55,18 @@ public class StateControllerIntegrationTest {
         assertEquals(90, battery.getLevel(), "Battery level should decrease by 10 after handling results with a cost of 10.");
     }
 
+    @Test
+    void testEchoUpdatesExtrasCorrectly() {
+        stateController.echo("N");
+        JSONObject response = new JSONObject().put("extras", new JSONObject().put("range", 5).put("found", "tree"));
+        stateController.handleResults(response);
+
+        // check that Extras was updated
+        Echo mostRecentEcho = extras.lastEcho();
+        assertNotNull(mostRecentEcho, "Most recent echo should not be null.");
+        assertEquals(5, mostRecentEcho.range(), "Echo range should be 5.");
+        assertEquals("tree", mostRecentEcho.found(), "Echo found should be 'tree'.");
+    }
+
 
 }
