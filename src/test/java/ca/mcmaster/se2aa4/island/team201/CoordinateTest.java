@@ -21,4 +21,9 @@ public class CoordinateTest {
     void testReturnY() {
         assertEquals(10, coordinate.y());
     }
+
+    @Test
+    void testNorth() {
+        
+    }
 }
