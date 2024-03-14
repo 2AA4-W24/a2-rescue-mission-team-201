@@ -10,4 +10,9 @@ public class CoordinateTest {
     void setUp() {
         coordinate = new Coordinate(10, 10);
     }
+
+    @Test
+    void testReturnX() {
+        assertEquals(10, coordinate.x());
+    }
 }
