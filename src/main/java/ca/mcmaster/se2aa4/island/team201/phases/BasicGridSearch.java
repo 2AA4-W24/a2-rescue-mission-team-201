@@ -168,18 +168,11 @@ public class BasicGridSearch extends AerialPhase {
         stopDroneIfNoBatteryLeft();
         stopDroneIfGridSearchDone();
 
+        // Go through state transitions / execution until you have actions in the queue to execute. 
         while (actionQueue.isEmpty()) {
-            
             executeState();
         }
-
-        if (actionQueue.isEmpty()) {
-            logger.info("empty");
-        }
-        Coordinate current = interpreter.getCurrent();
-
-        logger.info("Coordinates (based on action queue): {} {}", current.x(), current.y());
-
+        
         return nextAction();
     }
 

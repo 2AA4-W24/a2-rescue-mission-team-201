@@ -104,6 +104,29 @@ public class GoToIsland implements Phase {
         initialDistanceFromIsland = info.getInt("rangeOfIslandRelativeToDrone");
         directionToIsland = info.getString("directionOfIslandRelativeToDrone");
     } 
+
+    public void executeState() {
+        switch (state) {
+            case 1:
+            // Turn to the island direction
+            if (!interpreter.facing().equals(directionToIsland)) {
+
+                turnTo(directionToIsland);
+            }
+                state = 2;
+                break;
+            case 2:
+                flyForwardBy(initialDistanceFromIsland);
+                state = 3;
+                break;
+            case 3:
+                scan();
+                done = true;
+                break;
+            default: 
+                break;
+        }
+    }
     public JSONObject takeDecision() {
         logger.info(interpreter.numberOfActions());
         logger.info("battery {}", interpreter.getBattery());
@@ -112,26 +135,7 @@ public class GoToIsland implements Phase {
             return executor.stop();
         }
         while (actionQueue.isEmpty()) {
-            switch (state) {
-                case 1:
-                // Turn to the island direction
-                if (!interpreter.facing().equals(directionToIsland)) {
-
-                    turnTo(directionToIsland);
-                }
-                    state = 2;
-                    break;
-                case 2:
-                    flyForwardBy(initialDistanceFromIsland);
-                    state = 3;
-                    break;
-                case 3:
-                    scan();
-                    done = true;
-                    break;
-                default: 
-                    break;
-            }
+            executeState();
         }
 
         if (actionQueue.isEmpty()) {
