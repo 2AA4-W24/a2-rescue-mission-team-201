@@ -44,4 +44,9 @@ public class CoordinateTest {
         coordinate = coordinate.west();
         assertEquals(9, coordinate.x());
     }
+
+    @Test
+    void testEquals() {
+        
+    }
 }
