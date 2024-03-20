@@ -13,9 +13,10 @@ public class ActionTrackerTest {
         actionTracker = new ActionTracker();
     }
 
-//    @Test
-//    void testIncrementActions() {
-//
-//    }
-
+   @Test
+   void testIncrementActions() {
+        assertEquals(0, actionTracker.numberOfActions());
+        actionTracker.incrementActionsCompleted();
+        assertEquals(1, actionTracker.numberOfActions());
+   }
 }
