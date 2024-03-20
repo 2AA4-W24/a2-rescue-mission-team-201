@@ -38,4 +38,10 @@ public class CoordinateTest {
         coordinate = coordinate.south();
         assertEquals(9, coordinate.y());
     }
+
+    @Test
+    void testWest() {
+        coordinate = coordinate.west();
+        assertEquals(9, coordinate.x());
+    }
 }
