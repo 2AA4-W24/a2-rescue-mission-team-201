@@ -32,4 +32,10 @@ public class CoordinateTest {
         coordinate = coordinate.east();
         assertEquals(11, coordinate.x());
     }
+
+    @Test
+    void testSouth() {
+        coordinate = coordinate.south();
+        assertEquals(9, coordinate.y());
+    }
 }
