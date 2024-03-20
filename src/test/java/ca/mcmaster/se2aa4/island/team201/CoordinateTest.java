@@ -23,6 +23,13 @@ public class CoordinateTest {
 
     @Test
     void testNorth() {
-        
+        coordinate = coordinate.north();
+        assertEquals(11, coordinate.y());
+    }
+
+    @Test
+    void testEast() {
+        coordinate = coordinate.east();
+        assertEquals(11, coordinate.x());
     }
 }
