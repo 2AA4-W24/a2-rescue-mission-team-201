@@ -88,7 +88,6 @@ public class GoToIsland implements Phase {
     public void flyForwardBy(int blocks) {
         for (int i=0; i<blocks; i++) {
             actionQueue.add(new Action("fly"));
-            scan();
         }
     }
     public void stop() {
@@ -104,8 +103,6 @@ public class GoToIsland implements Phase {
     public void setInfoNeeded(JSONObject info) {
         initialDistanceFromIsland = info.getInt("rangeOfIslandRelativeToDrone");
         directionToIsland = info.getString("directionOfIslandRelativeToDrone");
-        result.put("initialDirection", info.getString("initialDirection"));
-
     } 
     public JSONObject takeDecision() {
         logger.info(interpreter.numberOfActions());

@@ -90,7 +90,7 @@ public class BasicGridSearch implements Phase {
         logger.info("doing {} #{} with battery {}", actionToDo.name(), interpreter.numberOfActions(), interpreter.getBattery());
         return executor.execute(actionWithDirection);
     }
-    // no info needed
+    // no info needed (rename it to intialize)
     public void setInfoNeeded(JSONObject info) {
         
         interpreter.setDirectionOfLines(interpreter.facing());
