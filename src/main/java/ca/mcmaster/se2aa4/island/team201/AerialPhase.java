@@ -72,6 +72,8 @@ public abstract class AerialPhase implements Phase {
             stop();
         }
     }
+
+    
     public JSONObject nextAction() {
         Action actionToDo = actionQueue.remove();
         Action actionWithDirection = addDirection(actionToDo);

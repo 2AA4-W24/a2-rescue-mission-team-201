@@ -21,9 +21,7 @@ public class BasicGridSearch extends AerialPhase {
     ActionExecutor executor;
     int state = 1;
     String directionToTurn;
-
     Boolean done = false;
-    int mapWidth = 0;
     JSONObject result = new JSONObject();
 
     public BasicGridSearch(ActionExecutor executor, Interpreter interpreter) {
@@ -168,11 +166,12 @@ public class BasicGridSearch extends AerialPhase {
         stopDroneIfNoBatteryLeft();
         stopDroneIfGridSearchDone();
 
-        // Go through state transitions / execution until you have actions in the queue to execute. 
+        // Go through state transitions / execution until you have actions in the queue
+        // to execute.
         while (actionQueue.isEmpty()) {
             executeState();
         }
-        
+
         return nextAction();
     }
 

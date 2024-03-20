@@ -21,26 +21,28 @@ public class FindIsland extends AerialPhase {
     String doNotEchoSide = "none";
     Boolean done = false;
     JSONObject result = new JSONObject();
-    
+
     public FindIsland(ActionExecutor executor, Interpreter interpreter) {
-        super(executor,interpreter);
+        super(executor, interpreter);
     }
-    
+
     public void detectIfDroneIsNextToBorder() {
         Echo[] last2echos = interpreter.lastNumEchos(2);
-                    for (int i=0; i < last2echos.length; i++) {
-                        if (last2echos[i].range() < 8) {
-                            if (i == 0) {
-                                doNotEchoSide = "left";
-                            } else if (i == 1) {
-                                doNotEchoSide = "right";
-                            }
-                        }
-                    }
+        for (int i = 0; i < last2echos.length; i++) {
+            if (last2echos[i].range() < 8) {
+                if (i == 0) {
+                    doNotEchoSide = "left";
+                } else if (i == 1) {
+                    doNotEchoSide = "right";
+                }
+            }
+        }
     }
+
     public boolean groundSeen() {
         return interpreter.lastEcho().found().equals("GROUND");
     }
+
     public void echoValidDirections() {
         if (doNotEchoSide.equals("left")) {
             echoRight();
@@ -78,6 +80,7 @@ public class FindIsland extends AerialPhase {
                 break;
         }
     }
+
     public JSONObject takeDecision() {
         stopDroneIfNoBatteryLeft();
 
@@ -87,25 +90,27 @@ public class FindIsland extends AerialPhase {
 
         return nextAction();
     }
+
     public Boolean done() {
         Echo lastEcho = interpreter.lastEcho();
 
         if (lastEcho == null) {
             return false;
         }
-        
+
         if (groundSeen()) {
             done = true;
             result.put("rangeOfIslandRelativeToDrone", lastEcho.range());
             result.put("directionOfIslandRelativeToDrone", lastEcho.direction());
         }
 
-
         return done;
     }
+
     public void initialize(JSONObject info) {
-        // Does not require info
+        // Does not require initialization info
     }
+
     public JSONObject results() {
         return result;
     }
