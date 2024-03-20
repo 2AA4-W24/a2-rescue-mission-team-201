@@ -100,7 +100,7 @@ public class GoToIsland implements Phase {
         logger.info("doing {}", actionToDo.name());
         return executor.execute(actionWithDirection);
     }
-    public void setInfoNeeded(JSONObject info) {
+    public void initialize(JSONObject info) {
         initialDistanceFromIsland = info.getInt("rangeOfIslandRelativeToDrone");
         directionToIsland = info.getString("directionOfIslandRelativeToDrone");
     } 

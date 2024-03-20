@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import ca.mcmaster.se2aa4.island.team201.ActionExecutor;
+import ca.mcmaster.se2aa4.island.team201.AerialPhase;
 import ca.mcmaster.se2aa4.island.team201.Coordinate;
 import ca.mcmaster.se2aa4.island.team201.Echo;
 import ca.mcmaster.se2aa4.island.team201.Interpreter;
@@ -15,88 +16,25 @@ import ca.mcmaster.se2aa4.island.team201.Map;
 import ca.mcmaster.se2aa4.island.team201.Phase;
 import ca.mcmaster.se2aa4.island.team201.Action;
 
-public class BasicGridSearch implements Phase {
+public class BasicGridSearch extends AerialPhase {
     private final Logger logger = LogManager.getLogger();
-    ActionExecutor executor; 
+    ActionExecutor executor;
     int state = 1;
-    String directionToIsland; 
     String directionToTurn;
-    int mapWidth = 0;
+
     Boolean done = false;
+    int mapWidth = 0;
     JSONObject result = new JSONObject();
-    Interpreter interpreter;
-    Queue<Action> actionQueue = new LinkedList<Action>();
+
     public BasicGridSearch(ActionExecutor executor, Interpreter interpreter) {
-        this.executor = executor;
-        this.interpreter = interpreter;
+        super(executor, interpreter);
     }
-    public void echoRight() {
-        actionQueue.add(new Action("echo","right"));
-    }
-    public void echo() {
-        actionQueue.add(new Action("echo","front"));
-    }
-    public void turnRight() {
-        actionQueue.add(new Action("heading","right"));
-    }
-    public void turnLeft() {
 
-        actionQueue.add(new Action("heading","left"));
-    }
-    public void stop() {
-        actionQueue.add(new Action("stop"));
-    }
-    public Action addDirection(Action action) {
-        Action actionWithDirection;
-        String direction = action.direction();
-        switch (direction) {
-            case "left":
-                actionWithDirection = new Action(action.name(), interpreter.getLeftDirection());
-                break;
-            case "right":
-                actionWithDirection = new Action(action.name(), interpreter.getRightDirection());
-                break;
-            case "front":
-                actionWithDirection = new Action(action.name(), interpreter.facing());
-                break;
-            case "none":
-                actionWithDirection = action;
-                break;
-            default: 
-                actionWithDirection = action;
-                break;
-        }
-
-        return actionWithDirection;
-    }
-    public void scan() {
-        actionQueue.add(new Action("scan"));
-    }
-    public void echoLeft() {
-        actionQueue.add(new Action("echo","left"));
-    }
-    public void fly() {
-        actionQueue.add(new Action("fly"));
-    }
-    public void flyForwardBy(int blocks) {
-        for (int i=0; i<blocks; i++) {
-            actionQueue.add(new Action("fly"));
-        }
-    }
-    public JSONObject nextAction() {
-        Action actionToDo = actionQueue.remove();
-        Action actionWithDirection = addDirection(actionToDo);
-        
-        logger.info("doing {} #{} with battery {}", actionToDo.name(), interpreter.numberOfActions(), interpreter.getBattery());
-        return executor.execute(actionWithDirection);
-    }
-    // no info needed (rename it to intialize)
-    public void setInfoNeeded(JSONObject info) {
-        
+    public void initialize(JSONObject info) {
         interpreter.setDirectionOfLines(interpreter.facing());
-    } 
-   
-    public void undoTurn() {
+    }
+
+    public void turnAroundInOppositeDirection() {
         if (directionToTurn.equals("left")) {
             turnRight();
             fly();
@@ -107,144 +45,148 @@ public class BasicGridSearch implements Phase {
             turnLeft();
         }
     }
-    Boolean done1 = false;
-    public JSONObject takeDecision() {
-        //logger.info("battery {}", interpreter.getBattery());
-        if (interpreter.getBattery() < 50 || interpreter.numberOfActions() > 10000 || done1 == true){
-            logger.info("done1 is {}", done1);
-            return executor.stop();
+
+    public void turnAround() {
+        if (directionToTurn != null && directionToTurn.equals("left")) {
+            logger.info("turns left");
+            turnLeft();
+            turnLeft();
+            directionToTurn = "right";
+            // If direction to turn is right or its the first turn
+        } else {
+            logger.info("does this RIGHT");
+            turnRight();
+            turnRight();
+            directionToTurn = "left";
+
         }
-        while (actionQueue.isEmpty()) {
-            switch (state) {
-                case 1:
-                    scan();
-                    Coordinate current =  interpreter.getCurrent();
-                    if (interpreter.hasAlreadySearched(current)) {
-                        done1 = true;
-                    }
-                    state = 2;
-                    break;
-                case 2:
-                if (interpreter.lastScanHadLand()) {
+    }
+
+    public void flyForwardUntilGround() {
+        flyForwardBy(interpreter.lastEcho().range() + 1);
+    }
+
+    public void setLineAsSearched() {
+        interpreter.setLineSearched(interpreter.getCurrent());
+    }
+
+    public void checkIfGridSearchIsDone() {
+        Coordinate current = interpreter.getCurrent();
+        if (interpreter.hasAlreadySearched(current)) {
+            done = true;
+        }
+    }
+
+    public Boolean lastScanHadLand() {
+        return interpreter.lastScanHadLand();
+    }
+
+    public boolean groundSeen() {
+        return interpreter.lastEcho().found().equals("GROUND");
+    }
+
+    public void stopDroneIfGridSearchDone() {
+        if (done == true) {
+            actionQueue.clear();
+            stop();
+        }
+    }
+
+    public void checkForLandInDirectionOfIsland() {
+        if (directionToTurn.equals("left")) {
+            fly();
+            fly();
+            fly();
+            echoRight();
+        } else if (directionToTurn.equals("right")) {
+            fly();
+            fly();
+            fly();
+            echoLeft();
+        }
+    }
+
+    public void turnAroundIfLandIsntNextToDrone() {
+        Echo lastEchoState7 = interpreter.lastEcho();
+        if (lastEchoState7.range() > 2) {
+            turnAroundInOppositeDirection();
+            echo();
+            state = 5;
+        } else {
+            state = 6;
+        }
+    }
+
+    public void executeState() {
+        switch (state) {
+            case 1:
+                scan();
+                checkIfGridSearchIsDone();
+                state = 2;
+                break;
+            case 2:
+                if (lastScanHadLand()) {
                     fly();
                     state = 1;
                 } else {
                     echo();
                     state = 4;
                 }
-                logger.info("the last scan biome is " + interpreter.lastScan().biomes()[0]);  
                 break;
-                case 3:
-                if (interpreter.lastScanHadLand()) {
-                    fly();
+            case 4:
+                if (groundSeen()) {
+                    flyForwardUntilGround();
                     state = 1;
                 } else {
-                    fly();
-                    scan();
-                    state = 4;
-                }
-                logger.info("the last scan biome is " + interpreter.lastScan().biomes()[0]);  
-                break;
-                case 4: 
-                if (interpreter.lastEcho().found().equals("GROUND")) {
-                    fly();
-                    state = 1;
-                } else {
-                    if (directionToTurn != null && directionToTurn.equals("left")) {
-                        logger.info("turns left");
-                        turnLeft();
-                        turnLeft();
-                        echo();
-                        directionToTurn = "right";
-                    // If direction to turn is right or its the first turn
-                    } else {
-                        logger.info("does this RIGHT");
-                        turnRight();
-                        turnRight();
-                        scan();
-                        echo();
-                        directionToTurn = "left";
-                        
-                    }
-                    interpreter.setLineSearched(interpreter.getCurrent());
+                    turnAround();
+                    echo();
+                    setLineAsSearched();
                     state = 5;
-                } 
+                }
                 break;
-                case 5:
-                    Echo lastEcho = interpreter.lastEcho();
-                    // If out of range, then turn around (island is not that way!)
-                    if (lastEcho.found().equals("OUT_OF_RANGE")) {
-                        // Go back to where you were before you scanned ocean 3 times. 
-                        fly();
-                        fly();
-                        fly();
-                        // comment this scan out later.
-                        logger.info("out of range found?");
-                        scan();
+            case 5:
+                if (groundSeen()) {
+                    flyForwardUntilGround();
+                    state = 1;
+                } else {
+                    state = 6;
+                }
+                break;
+            case 6:
+                checkForLandInDirectionOfIsland();
+                state = 7;
+                break;
+            case 7:
+                turnAroundIfLandIsntNextToDrone();
+                break;
+            default:
+                break;
+        }
+    }
 
+    public JSONObject takeDecision() {
+        stopDroneIfNoBatteryLeft();
+        stopDroneIfGridSearchDone();
 
-                        // Don't undo the turn until you find the whole line (range > 4)
-                        // State 6 will keep echoing until it finds the whole "line of land"
-                        state = 6;
-                    // If ground is found, then go to ground, and then go to state 1 to enter scanning phase.
-                    } else if (lastEcho.found().equals("GROUND")) {
-                        logger.info("flying forward by {}", lastEcho.range());
-                        flyForwardBy(lastEcho.range()+1);
-                        state = 1;
-                    }
-                    
-                break;
-                case 6:
-                // Basically, if the direction to turn is left and you're in this state, (you only get to this
-                // state if you don't see land in front of you after turning. ) 
-                // You know that you shouldn't actually turn left because there isn't land in that direction
-                // The land is to your right.
-                // Keep echoing until you find when you're no longer beside land (this is to 
-                // ensure that you don't miss any)
-                    if (directionToTurn.equals("left")) {
-                        fly();
-                        fly();
-                        fly();
-                        scan();
-                        echoRight();
-                    }
-                    else if (directionToTurn.equals("right")) {
-                        fly();
-                        fly();
-                        fly();
-                        scan();
-                        echoLeft();
-                    }
-                    state = 7;
-                break;
-                case 7:
-                    Echo lastEchoState7 = interpreter.lastEcho();
-                    if (lastEchoState7.range() > 2) {
-                        undoTurn();
-                        echo();
-                        state = 5;
-                    } else {
-                        state = 6;
-                    }
-                break;
-                default: 
-                    break;
-            }
+        while (actionQueue.isEmpty()) {
+            
+            executeState();
         }
 
         if (actionQueue.isEmpty()) {
             logger.info("empty");
         }
-        Coordinate current =  interpreter.getCurrent();
-        
+        Coordinate current = interpreter.getCurrent();
+
         logger.info("Coordinates (based on action queue): {} {}", current.x(), current.y());
-        
+
         return nextAction();
     }
 
     public Boolean done() {
         return done;
     }
+
     public JSONObject results() {
         return result;
     }

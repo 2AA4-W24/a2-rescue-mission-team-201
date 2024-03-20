@@ -174,7 +174,7 @@ public class FindIsland implements Phase {
 
         return done;
     }
-    public void setInfoNeeded(JSONObject info) {
+    public void initialize(JSONObject info) {
         // Does not require info
     }
     public JSONObject results() {
