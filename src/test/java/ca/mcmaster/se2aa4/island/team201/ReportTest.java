@@ -43,4 +43,10 @@ public class ReportTest {
         when(interpreter.getSite()).thenReturn(site);
         assertEquals("The closest inlet is creek2", report.getReport());
     }
+
+    @Test
+    public void testGetReport() {
+        when(interpreter.getCreeks()).thenReturn(new Scan[]{});
+        assertEquals("The closest inlet is No inlet found", report.getReport());
+    }
 }
