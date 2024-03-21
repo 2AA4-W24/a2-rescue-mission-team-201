@@ -22,4 +22,9 @@ public class ReportTest {
         when(interpreter.getCreeks()).thenReturn(new Scan[0]);
         assertEquals("The closest inlet is No inlet found", report.getReport());
     }
+
+    @Test
+    public void testClosestInletWithSingleInlet() {
+        
+    }
 }
