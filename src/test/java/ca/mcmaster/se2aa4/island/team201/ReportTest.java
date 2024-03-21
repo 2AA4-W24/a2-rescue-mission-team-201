@@ -23,8 +23,15 @@ public class ReportTest {
         assertEquals("The closest inlet is No inlet found", report.getReport());
     }
 
+
+
+    //////////scan class returns what is in the coordinate when scanned
     @Test
     public void testClosestInletWithSingleInlet() {
-        
+        Scan site = new Scan(new String[]{}, new String[]{}, new String[]{"site"}, new Coordinate(0, 0));
+        Scan[] creekScans = {new Scan(new String[]{}, new String[]{"creek"}, new String[]{}, new Coordinate(1, 1))};
+        when(interpreter.getCreeks()).thenReturn(creekScans);
+        when(interpreter.getSite()).thenReturn(site);
+        ////assertEquals("Inlet1", report.closestInlet());
     }
 }
