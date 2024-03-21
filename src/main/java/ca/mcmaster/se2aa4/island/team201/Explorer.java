@@ -2,10 +2,8 @@ package ca.mcmaster.se2aa4.island.team201;
 
 import java.io.StringReader;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configurator;
 
 import eu.ace_design.island.bot.IExplorerRaid;
 import org.json.JSONObject;
@@ -16,12 +14,12 @@ import ca.mcmaster.se2aa4.island.team201.phases.FindIsland;
 import ca.mcmaster.se2aa4.island.team201.phases.GoToIsland;
 
 public class Explorer implements IExplorerRaid {
-
     private final Logger logger = LogManager.getLogger();
     
     private Navigator navigator;
     private StateController stateController;
     private Report report; 
+   
     @Override
     public void initialize(String s) {
         logger.info("** Initializing the Exploration Command Center");
@@ -69,5 +67,4 @@ public class Explorer implements IExplorerRaid {
         logger.info(finalreport);
         return finalreport;
     }
-
 }
