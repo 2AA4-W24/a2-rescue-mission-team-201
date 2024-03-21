@@ -1,22 +1,13 @@
 package ca.mcmaster.se2aa4.island.team201.phases;
 
-import java.util.LinkedList;
-import java.util.Queue;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import ca.mcmaster.se2aa4.island.team201.ActionExecutor;
 import ca.mcmaster.se2aa4.island.team201.AerialPhase;
-import ca.mcmaster.se2aa4.island.team201.Coordinate;
-import ca.mcmaster.se2aa4.island.team201.Echo;
 import ca.mcmaster.se2aa4.island.team201.Interpreter;
-import ca.mcmaster.se2aa4.island.team201.Phase;
 import ca.mcmaster.se2aa4.island.team201.Action;
 
 public class GoToIsland extends AerialPhase {
-    private final Logger logger = LogManager.getLogger();
     int state = 1;
     int initialDistanceFromIsland;
     String directionToIsland;
