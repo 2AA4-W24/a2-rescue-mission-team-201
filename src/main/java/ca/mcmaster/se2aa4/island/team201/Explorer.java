@@ -14,7 +14,6 @@ import org.json.JSONTokener;
 import ca.mcmaster.se2aa4.island.team201.phases.BasicGridSearch;
 import ca.mcmaster.se2aa4.island.team201.phases.FindIsland;
 import ca.mcmaster.se2aa4.island.team201.phases.GoToIsland;
-import ca.mcmaster.se2aa4.island.team201.phases.GridSearch;
 
 public class Explorer implements IExplorerRaid {
 
