@@ -2,11 +2,6 @@ package ca.mcmaster.se2aa4.island.team201;
 
 import java.util.ArrayList;
 
-import javax.tools.JavaFileManager.Location;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class Interpreter {
     private ActionTracker actionTracker;
     private LocationTracker locationTracker;
@@ -14,7 +9,6 @@ public class Interpreter {
     private Map map;
     private Battery battery;
 
-    private final Logger logger = LogManager.getLogger();
     public Interpreter(ActionTracker actionTracker, LocationTracker locationTracker, Map map, Extras extras, Battery battery){ 
         this.actionTracker = actionTracker; 
         this.locationTracker = locationTracker;
