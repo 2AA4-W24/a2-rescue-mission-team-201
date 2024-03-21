@@ -66,7 +66,7 @@ public abstract class AerialPhase implements Phase {
             actionQueue.add(new Action("fly"));
         }
     }
-    public void stopDroneIfNoBatteryLeft() {
+    protected void stopDroneIfNoBatteryLeft() {
         if (interpreter.getBattery() < 50) {
             actionQueue.clear();
             stop();
