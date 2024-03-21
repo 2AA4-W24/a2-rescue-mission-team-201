@@ -13,7 +13,7 @@ public class NavigatorTest {
     private Navigator navigator;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         Phase phase1 = mock(Phase.class);
         Phase phase2 = mock(Phase.class);
     
@@ -22,12 +22,12 @@ public class NavigatorTest {
 
         JSONObject phase1Results = new JSONObject();
         when(phase1.results()).thenReturn(phase1Results);
-        JSONObject phase1Decision = new JSONObject().put("decision", "Phase1 Decision");
+        JSONObject phase1Decision = new JSONObject().put("action", "Phase1 Action");
         when(phase1.takeDecision()).thenReturn(phase1Decision);
         
         JSONObject phase2Results = new JSONObject();
         when(phase2.results()).thenReturn(phase2Results);
-        JSONObject phase2Decision = new JSONObject().put("decision", "Phase2 Decision");
+        JSONObject phase2Decision = new JSONObject().put("action", "Phase2 Action");
         when(phase2.takeDecision()).thenReturn(phase2Decision);
         
         phases = new Phase[]{phase1, phase2};
