@@ -1,12 +1,8 @@
 package ca.mcmaster.se2aa4.island.team201;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class Report {
     Interpreter interpreter;
-    private final Logger logger = LogManager.getLogger();
-
+    
     public Report(Interpreter interpreter) {
         this.interpreter = interpreter;
     }
@@ -32,12 +28,10 @@ public class Report {
                 if (distance < minDistance) {
                     minDistance = distance;
                     minIdx = i;
-                    
-                //logger.info("{} {}", creekScans[i].location().x(), creekScans[i].location().y());
                 }
 
             }
-            //logger.info("the site is {} {}", site.location().x(), site.location().y());
+            
             String closestCreek = creekScans[minIdx].creeks()[0];
             return closestCreek;
         } else {
@@ -45,11 +39,9 @@ public class Report {
             String creek = firstCreekScan.creeks()[0];
             return creek;
         }
-
     }
 
     public String getReport() {
-
         return "The closest inlet is " + closestInlet();
     }
 }
