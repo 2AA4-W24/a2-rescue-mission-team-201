@@ -16,20 +16,20 @@ public abstract class AerialPhase implements Phase {
     protected void echoRight() {
         actionQueue.add(new Action("echo","right"));
     }
-    public void echo() {
+    protected void echo() {
         actionQueue.add(new Action("echo","front"));
     }
-    public void turnRight() {
+    protected void turnRight() {
         actionQueue.add(new Action("heading","right"));
     }
-    public void turnLeft() {
+    protected void turnLeft() {
 
         actionQueue.add(new Action("heading","left"));
     }
-    public void stop() {
+    protected void stop() {
         actionQueue.add(new Action("stop"));
     }
-    public Action addDirection(Action action) {
+    protected Action addDirection(Action action) {
         Action actionWithDirection;
         String direction = action.direction();
         switch (direction) {
@@ -52,16 +52,16 @@ public abstract class AerialPhase implements Phase {
 
         return actionWithDirection;
     }
-    public void scan() {
+    protected void scan() {
         actionQueue.add(new Action("scan"));
     }
-    public void echoLeft() {
+    protected void echoLeft() {
         actionQueue.add(new Action("echo","left"));
     }
-    public void fly() {
+    protected void fly() {
         actionQueue.add(new Action("fly"));
     }
-    public void flyForwardBy(int blocks) {
+    protected void flyForwardBy(int blocks) {
         for (int i=0; i<blocks; i++) {
             actionQueue.add(new Action("fly"));
         }
