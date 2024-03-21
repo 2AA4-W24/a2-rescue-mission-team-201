@@ -33,4 +33,10 @@ public class NavigatorTest {
         phases = new Phase[]{phase1, phase2};
         navigator = new Navigator(phases);
     }
+
+    @Test
+    public void testTakeDecision() {
+        assertEquals("{\"action\":\"Phase1 Action\"}", navigator.takeDecision());
+        assertEquals("{\"action\":\"Phase2 Action\"}", navigator.takeDecision());
+    }
 }
