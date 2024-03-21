@@ -13,7 +13,7 @@ public abstract class AerialPhase implements Phase {
         this.executor = executor;
         this.interpreter = interpreter;
     }
-     public void echoRight() {
+    public void echoRight() {
         actionQueue.add(new Action("echo","right"));
     }
     public void echo() {
