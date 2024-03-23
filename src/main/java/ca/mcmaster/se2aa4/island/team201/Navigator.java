@@ -14,7 +14,7 @@ public class Navigator {
     }
 
     private void changePhaseIfNeeded() {
-        if (currentPhase.done()) {
+        if (currentPhaseIndex != phases.length-1 && currentPhase.done()) {
             JSONObject infoToPassOn = currentPhase.results();
             goToNextPhase();
             currentPhase.initialize(infoToPassOn);
