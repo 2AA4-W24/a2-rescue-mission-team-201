@@ -2,14 +2,10 @@ package ca.mcmaster.se2aa4.island.team201;
 
 import java.util.ArrayList;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Extras {
-
-    private final Logger logger = LogManager.getLogger();
     Echo mostRecentEcho;
     ArrayList<Echo> echos = new ArrayList<Echo>();
     Scan mostRecentScan;
@@ -37,7 +33,6 @@ public class Extras {
                     biomes = new String[jsonBiomes.length()];
                     for (int i = 0; i < biomes.length; i++) {
                         biomes[i] = jsonBiomes.optString(i);
-                  
                     }
                 }
                 if (jsonCreeks.length() != 0) {
@@ -57,7 +52,6 @@ public class Extras {
             default:
                 break;
         }
-
     }
 
     public Echo lastEcho() {
@@ -73,5 +67,4 @@ public class Extras {
     public ArrayList<Scan> getScans() {
         return scans;
     }
-
 }
