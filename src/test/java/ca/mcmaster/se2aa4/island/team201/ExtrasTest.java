@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Test;
 
          extras.updateState(echoInfo, echoAction, location);
 
-         // some Assertions
          assertFalse(extras.getEchos().isEmpty(), "Echo list shouldn't be empty after processing echo");
          Echo mostRecentEcho = extras.lastEcho();
          assertEquals(5, mostRecentEcho.range(), "The range of recent echo should be 5");

@@ -106,5 +106,4 @@ public class LocationTracker {
                 break;
         }
     }
-    
 }
