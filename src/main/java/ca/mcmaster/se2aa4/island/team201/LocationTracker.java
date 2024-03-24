@@ -33,69 +33,43 @@ public class LocationTracker {
         return facing;
     }
     public String getRightDirection() {
-        switch (facing) {
-
-            case "N":
-                return "E";
-            case "E":
-                return "S";
-            case "S":
-                return "W";
-            case "W":
-                return "N";
-            default:
-                return "";
-        }
+        return switch (facing) {
+            case "N" -> "E";
+            case "E" -> "S";
+            case "S" -> "W";
+            case "W" -> "N";
+            default -> "";
+        };
     }
     public String getLeftDirection() {
-        switch (facing) {
-            
-            case "N":
-                return "W";
-            case "E":
-                return "N";
-            case "S":
-                return "E";
-            case "W":
-                return "S";
-            default:
-                return "";
-        }
+        return switch (facing) {
+            case "N" -> "W";
+            case "E" -> "N";
+            case "S" -> "E";
+            case "W" -> "S";
+            default -> "";
+        };
     }
     public Coordinate getFront() {
-        switch (facing) {
-
-            case "N":
-                return current.north();
-            case "E":
-                return current.east();
-            case "S":
-                return current.south();
-            case "W":
-                return current.west();
-            default:
-                return current;
-        }
+        return switch (facing) {
+            case "N" -> current.north();
+            case "E" -> current.east();
+            case "S" -> current.south();
+            case "W" -> current.west();
+            default -> current;
+        };
     }
     public void turn(String direction) {
         current = getFront();
 
         setHeading(direction);
         switch (direction) {
-            case "N":
-                current = current.north();
-                break;
-            case "E":
-                current = current.east();
-                break;
-            case "S":
-                current = current.south();
-                break;
-            case "W":
-                current = current.west();
-                break;
-            default:
-                break;
+            case "N" -> current = current.north();
+            case "E" -> current = current.east();
+            case "S" -> current = current.south();
+            case "W" -> current = current.west();
+            default -> {
+            }
         }
     }
 }
