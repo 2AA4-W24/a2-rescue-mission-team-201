@@ -17,20 +17,12 @@ public class LocationTracker {
     }
     public void moveForward() {
         switch (facing) {
-            case "N":
-                current = current.north();
-                break;
-            case "E":
-                current = current.east();
-                break;
-            case "S":
-                current = current.south();
-                break;
-            case "W":
-                current = current.west();
-                break;
-            default:
-                break;
+            case "N" -> current = current.north();
+            case "E" -> current = current.east();
+            case "S" -> current = current.south();
+            case "W" -> current = current.west();
+            default -> {
+            }
         }
     }
 
@@ -42,7 +34,7 @@ public class LocationTracker {
     }
     public String getRightDirection() {
         switch (facing) {
-            
+
             case "N":
                 return "E";
             case "E":
@@ -72,7 +64,7 @@ public class LocationTracker {
     }
     public Coordinate getFront() {
         switch (facing) {
-            
+
             case "N":
                 return current.north();
             case "E":
