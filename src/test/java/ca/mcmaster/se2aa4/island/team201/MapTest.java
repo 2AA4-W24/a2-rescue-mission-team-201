@@ -10,6 +10,9 @@ class MapTest {
         Map map = new Map();
         map.setDirectionOfLines("N");
         assertEquals("x", map.axisToSave, "the Axis should be x for North direction");
+
+        map.setDirectionOfLines("E");
+        assertEquals("y", map.axisToSave, "Axis should be 'y' for East direction");
     }
 
 }
