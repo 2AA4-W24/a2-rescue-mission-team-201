@@ -5,5 +5,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MapTest {
 
+    @Test
+    void testSetDirectionOfLines() {
+        Map map = new Map();
+        map.setDirectionOfLines("N");
+        assertEquals("x", map.axisToSave, "the Axis should be x for North direction");
+    }
+
 }
 
